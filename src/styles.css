@@ -152,7 +152,6 @@ h1 span { position: absolute; white-space: nowrap; }
   .station:hover { --station-scale: 1.12; --glow-scale: 1.18; --glow-opacity: 1; }
 }
 .station:active { --station-scale: 1.04; --glow-scale: 1.08; --glow-opacity: 1; }
-.lake-wave { transform-origin: center; }
 .lake-label span { position: absolute; font-size: calc(100cqw * 19 / 1254); line-height: normal; color: #2e6a88; text-align: center; }
 .train { border-radius: calc(100cqw * 4 / 1254); background: #fff; box-shadow: 0 calc(100cqw * 1 / 1254) calc(100cqw * 3 / 1254) rgba(20, 36, 46, .14); }
 .train-window { border-radius: calc(100cqw * 1 / 1254); }
@@ -217,13 +216,6 @@ h1 span { position: absolute; white-space: nowrap; }
   .nav-item { transition: color .18s ease; }
   .station img { transition: transform .3s cubic-bezier(.2, 1.3, .4, 1); }
   .station::before { transition: opacity .3s ease, transform .4s cubic-bezier(.2, 1.15, .4, 1); }
-  .lake-wave-wide { animation: lake-swell 6.8s ease-in-out infinite; }
-  .lake-wave-small { animation: lake-swell 8.4s ease-in-out -3.2s infinite reverse; }
-  @keyframes lake-swell {
-    0%, 100% { transform: translate(0, 0) scaleY(1); opacity: 1; }
-    30% { transform: translate(calc(100cqw * 4 / 1254), calc(100cqw * -1.5 / 1254)) scaleY(.82); opacity: .78; }
-    65% { transform: translate(calc(100cqw * -3 / 1254), calc(100cqw * 1.2 / 1254)) scaleY(1.1); opacity: .92; }
-  }
   .information-panel[open] { animation: arrive .18s ease-out; }
   @keyframes arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 }

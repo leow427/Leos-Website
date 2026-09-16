@@ -1,13 +1,31 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1284.38" height="1254.16" viewBox="0 0 1284.38 1254.16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <style>
-/* Animate only the two original water ripples; shoreline geometry stays fixed. */
+/* Wave crests travel from open water toward the coast, fading before each reset. */
 @media (prefers-reduced-motion: no-preference) {
+  [id="Shoreline / inset contour"], [id="Shoreline / inset contour_2"] {
+    --wave-start: 22px;
+    --wave-end: -12px;
+    stroke-opacity: .56;
+    animation: shore-roll 6.4s linear infinite;
+  }
+  [id="Shoreline / inset contour_2"] {
+    --wave-start: 5px;
+    --wave-end: -29px;
+    animation-delay: -3.2s;
+  }
   [id="Water / quiet ripple"], [id="Water / quiet ripple_2"] {
     transform-box: fill-box;
     transform-origin: center;
     animation: quiet-water 9.5s ease-in-out -2s infinite;
   }
   [id="Water / quiet ripple_2"] { animation-duration: 11.5s; animation-delay: -6s; animation-direction: reverse; }
+}
+@keyframes shore-roll {
+  0% { transform: translateX(var(--wave-start)); opacity: 0; }
+  18% { opacity: .8; }
+  55% { opacity: 1; }
+  82% { opacity: .7; }
+  100% { transform: translateX(var(--wave-end)); opacity: 0; }
 }
 @keyframes quiet-water {
   0%, 100% { transform: translate(0, 0) scaleY(1); opacity: 1; }

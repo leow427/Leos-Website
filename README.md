@@ -22,7 +22,7 @@ The production build is in `dist/`. All artwork and fonts are served locally, an
 
 - The approved 1254 × 1254 desktop composition is reproduced with the original Figma SVG exports, proportional coordinates, Inter typography, street grid, station halos, and static train accents.
 - Text, navigation, stations, and trains are React/HTML elements, not a flattened screenshot.
-- The navigation pill follows pointer hover and keyboard focus with a soft spring and press feedback. The four lake ripples drift at staggered speeds; station hover/focus gently enlarges the marker and adds a route-colored glow. Animations respect reduced-motion preferences.
+- The navigation pill follows pointer hover and keyboard focus with a soft spring and press feedback. The white shoreline crests roll toward the coast in staggered sets, fading as they arrive; the two wave marks below “Lake Michigan” remain still. Station hover/focus gently enlarges the marker and adds a route-colored glow. Animations respect reduced-motion preferences.
 - The map scales proportionally up to its original size. At widths of 700px or less, the menu sits above the map with touch-friendly controls.
 - About, Projects, and Contact open simple coming-soon dialogs. Every station opens Projects. Dialogs support keyboard focus, Escape, backdrop dismissal, and a return button.
 - Approved station labels remain **TBD**. Update `src/design.ts` when content is ready.
