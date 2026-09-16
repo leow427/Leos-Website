@@ -8,10 +8,12 @@ test('the approved map loads with complete local artwork and no runtime errors',
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Leo’s Portfolio');
   await expect(page.getByRole('button', { name: /Line project/ })).toHaveCount(5);
   await expect(page.getByRole('navigation').getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
-  const images = await page.locator('.map-canvas img').evaluateAll(nodes =>
-    nodes.map(node => { const img = node as HTMLImageElement; return { loaded: img.complete && img.naturalWidth > 0, local: new URL(img.src).origin === location.origin }; }),
-  );
-  expect(images.every(image => image.loaded && image.local)).toBe(true);
+  await expect.poll(() => page.locator('.map-canvas img').evaluateAll(nodes =>
+    nodes.every(node => {
+      const img = node as HTMLImageElement;
+      return img.complete && img.naturalWidth > 0 && new URL(img.src).origin === location.origin;
+    }),
+  )).toBe(true);
   expect(errors).toEqual([]);
 });
 

@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { asset, panelContent, place, stations, unit } from './design';
 import type { PageName } from './design';
 
-function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254 }: {
-  name: string; x?: number; y?: number; width?: number; height?: number;
+function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = '' }: {
+  name: string; x?: number; y?: number; width?: number; height?: number; className?: string;
 }) {
-  return <img className="artwork" src={asset(name)} alt="" draggable="false" style={place(x, y, width, height)} />;
+  return <img className={`artwork ${className}`} src={asset(name)} alt="" draggable="false" style={place(x, y, width, height)} />;
 }
 
 function StreetGrid() {
@@ -46,17 +46,71 @@ const navigation = [
   { name: 'Contact', x: 359, width: 116, textX: 17.5, textWidth: 87 },
 ] as const;
 
+type NavigationName = typeof navigation[number]['name'];
+
 function Navigation({ active, onNavigate }: { active: PageName | null; onNavigate: (page: PageName | null) => void }) {
+  const navRef = useRef<HTMLElement>(null);
+  const itemRefs = useRef<Partial<Record<NavigationName, HTMLButtonElement | null>>>({});
+  const [hovered, setHovered] = useState<NavigationName | null>(null);
+  const [focused, setFocused] = useState<NavigationName | null>(null);
+  const [pressed, setPressed] = useState(false);
+  const [bubble, setBubble] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const highlighted = active ?? hovered ?? focused ?? 'Home';
+
+  // Measure the actual buttons so the same pill also follows the mobile flex layout.
+  useLayoutEffect(() => {
+    const nav = navRef.current;
+    const item = itemRefs.current[highlighted];
+    if (!nav || !item) return;
+    const measure = () => {
+      const container = nav.getBoundingClientRect();
+      const target = item.getBoundingClientRect();
+      setBubble({
+        x: target.left - container.left - nav.clientLeft,
+        y: target.top - container.top - nav.clientTop,
+        width: target.width,
+        height: target.height,
+      });
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, [highlighted]);
+
   return (
-    <nav className="site-nav" aria-label="Main navigation">
+    <nav ref={navRef} className="site-nav" aria-label="Main navigation"
+      data-engaged={Boolean(hovered || focused)} data-pressed={pressed}
+      onPointerLeave={() => { setHovered(null); setPressed(false); }}
+      onPointerUp={() => setPressed(false)}
+      onPointerCancel={() => setPressed(false)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) { setFocused(null); setPressed(false); }
+      }}>
+      <span className="nav-bubble" aria-hidden="true" style={{
+        width: bubble.width, height: bubble.height,
+        transform: `translate3d(${bubble.x}px, ${bubble.y}px, 0)`,
+        visibility: bubble.width ? 'visible' : 'hidden',
+      }} />
       {navigation.map(({ name, x, width, textX, textWidth }) => (
         <button type="button" key={name}
-          className={`nav-item ${(active ?? 'Home') === name ? 'is-active' : ''}`}
+          ref={(element) => { itemRefs.current[name] = element; }}
+          className={`nav-item ${(active ?? 'Home') === name ? 'is-active' : ''} ${highlighted === name ? 'is-highlighted' : ''}`}
           style={{ left: unit(x - 1), width: unit(width) }}
           aria-current={(active ?? 'Home') === name ? 'page' : undefined}
           aria-haspopup={name === 'Home' ? undefined : 'dialog'}
           aria-controls={name === 'Home' ? undefined : 'information-panel'}
-          onClick={() => onNavigate(name === 'Home' ? null : name)}>
+          onPointerEnter={(event) => { if (event.pointerType === 'mouse' || event.pointerType === 'pen') { setHovered(name); setFocused(null); } }}
+          onPointerDown={() => setPressed(true)}
+          onFocus={(event) => { if (event.currentTarget.matches(':focus-visible')) { setFocused(name); setHovered(null); } }}
+          onKeyDown={(event) => { if (event.key === ' ' || event.key === 'Enter') setPressed(true); }}
+          onKeyUp={() => setPressed(false)}
+          onClick={() => {
+            setPressed(false);
+            setHovered(null);
+            setFocused(null);
+            onNavigate(name === 'Home' ? null : name);
+          }}>
           <span style={{ left: unit(textX), width: unit(textWidth) }}>{name}</span>
         </button>
       ))}
@@ -77,11 +131,11 @@ function TransitMap({ onProject }: { onProject: () => void }) {
         <span className="hero-portfolio" style={place(52, 529, 447, 128)}>Portfolio</span>
       </h1>
       <Artwork name="station-halos" />
-      {stations.map(({ line, x, y, labelX, labelY }) => (
+      {stations.map(({ line, color, x, y, labelX, labelY }) => (
         <button key={line} type="button" className="station"
           aria-label={`${line} Line project — coming soon`}
           aria-haspopup="dialog" aria-controls="information-panel"
-          style={{ left: unit(x + 16), top: unit(y + 16) }}
+          style={{ left: unit(x + 16), top: unit(y + 16), '--route-color': color } as CSSProperties}
           onClick={onProject}>
           <img src={asset('station')} alt="" draggable="false" />
           <span className="station-label" aria-hidden="true" style={{
@@ -93,8 +147,8 @@ function TransitMap({ onProject }: { onProject: () => void }) {
         <span style={place(1141.5, 364, 43, 23)} aria-hidden="true">Lake</span>
         <span style={place(1122, 393, 82, 23)} aria-hidden="true">Michigan</span>
       </div>
-      <Artwork name="lake-wave-wide" x={1110.3753} y={461} width={81.2494} height={10} />
-      <Artwork name="lake-wave-small" x={1140.3753} y={485} width={61.2494} height={10} />
+      <Artwork className="lake-wave lake-wave-wide" name="lake-wave-wide" x={1110.3753} y={461} width={81.2494} height={10} />
+      <Artwork className="lake-wave lake-wave-small" name="lake-wave-small" x={1140.3753} y={485} width={61.2494} height={10} />
       <Artwork name="chicago-stars" x={52} y={392} width={94} height={17} />
       <MiniTrains />
     </section>

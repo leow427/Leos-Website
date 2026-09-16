@@ -12,11 +12,11 @@ export const place = (x: number, y: number, width: number, height: number): CSSP
 export const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.svg`;
 
 export const stations = [
-  { line: 'Brown', x: 540, y: 191, labelX: 580, labelY: 194 },
-  { line: 'Red', x: 828, y: 214, labelX: 868, labelY: 216 },
-  { line: 'Blue', x: 391.8928527832031, y: 355.8519287109375, labelX: 429, labelY: 327 },
-  { line: 'Green', x: 910, y: 572, labelX: 950, labelY: 575 },
-  { line: 'Orange', x: 939, y: 978, labelX: 981, labelY: 981 },
+  { line: 'Brown', color: '#854f0f', x: 540, y: 191, labelX: 580, labelY: 194 },
+  { line: 'Red', color: '#d00b29', x: 828, y: 214, labelX: 868, labelY: 216 },
+  { line: 'Blue', color: '#047fdf', x: 391.8928527832031, y: 355.8519287109375, labelX: 429, labelY: 327 },
+  { line: 'Green', color: '#028a4c', x: 910, y: 572, labelX: 950, labelY: 575 },
+  { line: 'Orange', color: '#fd821a', x: 939, y: 978, labelX: 981, labelY: 981 },
 ] as const;
 
 export type PageName = 'About' | 'Projects' | 'Contact';
