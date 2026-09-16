@@ -12,11 +12,11 @@ function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = 
 function Lake({ project = false }: { project?: boolean }) {
   const height = project ? 1580 : 1136;
   const stretch = height / 1136;
-  return <>
+  return <div className="lake-layer" aria-hidden="true" style={{ '--lake-height': unit(height) } as CSSProperties}>
     <Artwork name={project ? 'project-lake' : 'lake-michigan'} x={1014} width={240} height={height} />
     <Artwork className="shore-waves" name="coastline" y={-0.16492 * stretch}
       width={1284.38} height={1254.16492 * stretch} />
-  </>;
+  </div>;
 }
 
 function StreetGrid({ height = 1254 }: { height?: number }) {
@@ -150,8 +150,8 @@ function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
       <div className="scene-background" aria-hidden="true">
         <Artwork name="paper" />
         <StreetGrid />
-        <Lake />
       </div>
+      <Lake />
       {/* Continue the exported routes at their original endpoints, beyond the centered map. */}
       <RouteExtension x={556} y={116} direction="north" color={routeColors.Brown} />
       <RouteExtension x={588} y={116} direction="north" color="#44268a" />
@@ -212,8 +212,8 @@ function ProjectPage({ project }: { project: Project }) {
       <div className="project-scene">
         <div className="scene-background" aria-hidden="true">
           <StreetGrid height={1580} />
-          <Lake project />
         </div>
+        <Lake project />
         <RouteExtension x={10} y={144} direction="west" width={16} />
         <RouteExtension x={964} y={1536} direction="east" width={16} />
         <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1408} />

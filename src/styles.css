@@ -33,6 +33,20 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-
 }
 .map-canvas { position: relative; width: 100%; aspect-ratio: 1; isolation: isolate; }
 .scene-background { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.lake-layer { position: absolute; inset: 0; pointer-events: none; }
+/* Continue the lake's edge color across the open water, without stretching the coastline. */
+.lake-layer::before, .lake-layer::after { content: ''; position: absolute; }
+.lake-layer::before {
+  left: calc(100% - 1px); top: -100vh; bottom: -100vh; width: 100vw;
+  background: #97d8f3;
+  /* Carry the shoreline's final 14:9 tangent beyond the original artboard. */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100vh + var(--lake-height) + 100vw * 9 / 14), 0 calc(100vh + var(--lake-height)));
+}
+.lake-layer::after {
+  left: calc(100cqw * 1014 / 1254); bottom: 100%;
+  width: calc(100cqw * 240 / 1254); height: 100vh;
+  background: linear-gradient(90deg, #c2eaf7, #97d8f3);
+}
 .artwork, .map-layer, .grid-line, .train, .train-window { position: absolute; pointer-events: none; }
 .artwork { display: block; user-select: none; }
 .map-layer { inset: 0; }
@@ -215,7 +229,6 @@ h1 span { position: absolute; white-space: nowrap; }
   transform-origin: calc(100% - 1px) 50%; transform: translateX(-100%) rotate(41.11209deg);
 }
 .project-canvas, .projects-canvas { position: relative; isolation: isolate; }
-.projects-canvas { overflow: hidden; }
 .project-canvas:focus { outline: none; }
 .project-scene { position: relative; height: calc(100cqw * 1580 / 1254); }
 .project-content {
