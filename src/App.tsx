@@ -16,8 +16,6 @@ function Lake({ project = false }: { project?: boolean }) {
     <Artwork name={project ? 'project-lake' : 'lake-michigan'} x={1014} width={240} height={height} />
     <Artwork className="shore-waves" name="coastline" y={-0.16492 * stretch}
       width={1284.38} height={1254.16492 * stretch} />
-    <Artwork className="lake-wave" name="lake-wave-wide" x={1110.3753} y={461} width={81.2494} height={10} />
-    <Artwork className="lake-wave" name="lake-wave-small" x={1140.3753} y={485} width={61.2494} height={10} />
   </>;
 }
 
@@ -137,12 +135,34 @@ function RouteArtwork({ name, x, y, width, height, className = '' }: {
   }} />;
 }
 
+function RouteExtension({ x, y, direction, color, width = 26 }: {
+  x: number; y: number; direction: 'north' | 'south' | 'west' | 'east' | 'northwest'; color?: string; width?: number;
+}) {
+  return <span aria-hidden="true" className={`route-extension route-extension-${direction}`} style={{
+    '--route-x': unit(x), '--route-y': unit(y), '--route-width': unit(width),
+    ...(color ? { '--route-color': color } : {}),
+  } as CSSProperties} />;
+}
+
 function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
   return (
     <section className="map-canvas" aria-labelledby="portfolio-title">
-      <Artwork name="paper" />
-      <StreetGrid />
-      <Lake />
+      <div className="scene-background" aria-hidden="true">
+        <Artwork name="paper" />
+        <StreetGrid />
+        <Lake />
+      </div>
+      {/* Continue the exported routes at their original endpoints, beyond the centered map. */}
+      <RouteExtension x={556} y={116} direction="north" color={routeColors.Brown} />
+      <RouteExtension x={588} y={116} direction="north" color="#44268a" />
+      <RouteExtension x={955} y={1160} direction="south" color={routeColors.Orange} />
+      <RouteExtension x={330} y={389} direction="west" color={routeColors.Green} />
+      <RouteExtension x={926} y={1160} direction="south" color={routeColors.Green} />
+      <RouteExtension x={330} y={417} direction="west" color="#fc81ad" />
+      <RouteExtension x={329} y={303} direction="northwest" color={routeColors.Blue} />
+      <RouteExtension x={53} y={772} direction="west" color={routeColors.Blue} />
+      <RouteExtension x={844} y={104} direction="north" color={routeColors.Red} />
+      <RouteExtension x={844} y={1160} direction="south" color={routeColors.Red} />
       <Artwork name="transit-lines" x={53} y={104} width={975} height={1056} />
       <h1 id="portfolio-title">
         <span className="hero-name" style={place(51, 413, 274, 132)}>Leo’s</span>{' '}
@@ -165,7 +185,7 @@ function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
           </div>
         );
       })}
-      <Artwork name="chicago-stars" x={52} y={392} width={94} height={17} />
+      <Artwork name="chicago-stars" x={52} y={348} width={94} height={17} />
       <MiniTrains />
     </section>
   );
@@ -190,8 +210,12 @@ function ProjectPage({ project }: { project: Project }) {
       style={{ '--route-color': routeColors[project.line] } as CSSProperties}>
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">
-        <StreetGrid height={1580} />
-        <Lake project />
+        <div className="scene-background" aria-hidden="true">
+          <StreetGrid height={1580} />
+          <Lake project />
+        </div>
+        <RouteExtension x={10} y={144} direction="west" width={16} />
+        <RouteExtension x={964} y={1536} direction="east" width={16} />
         <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1408} />
         <div className="project-content">
           <header className="project-introduction">
@@ -328,12 +352,14 @@ export default function App() {
   const activeNavigation = activePanel ?? (view.kind === 'home' ? 'Home' : view.kind === 'projects' ? 'Projects' : null);
 
   return (
-    <main className="portfolio">
-      <Navigation active={activeNavigation} onNavigate={navigate} />
-      {view.kind === 'home' && <TransitMap onProject={openProject} />}
-      {view.kind === 'project' && <ProjectPage project={view.project} />}
-      {view.kind === 'projects' && <ProjectsPage onProject={openProject} />}
-      <ComingSoonPanel page={activePanel} onClose={() => setActivePanel(null)} />
-    </main>
+    <div className="site-frame">
+      <main className="portfolio">
+        <Navigation active={activeNavigation} onNavigate={navigate} />
+        {view.kind === 'home' && <TransitMap onProject={openProject} />}
+        {view.kind === 'project' && <ProjectPage project={view.project} />}
+        {view.kind === 'projects' && <ProjectsPage onProject={openProject} />}
+        <ComingSoonPanel page={activePanel} onClose={() => setActivePanel(null)} />
+      </main>
+    </div>
   );
 }

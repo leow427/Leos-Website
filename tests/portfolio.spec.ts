@@ -34,7 +34,7 @@ test('the map shows only Week 1, restored waves, and no lake label', async ({ pa
   await expect(page.getByText('TBD', { exact: true })).toHaveCount(0);
   await expect(page.getByText(/Lake|Michigan/)).toHaveCount(0);
   await expect(page.locator('.shore-waves')).toHaveCount(1);
-  await expect(page.locator('.lake-wave')).toHaveCount(2);
+  await expect(page.locator('.lake-wave')).toHaveCount(0);
   await expect(page.locator('img[src*="station-halos"]')).toHaveCount(0);
   await expect(page.getByRole('navigation').getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
   await expectLocalArtwork(page);
@@ -79,7 +79,7 @@ test('Week 1 opens the Figma page with matching route color, blank copy, and two
   await expectFigmaBox(page, images.nth(0), { x: 164, y: 404, width: 800, height: 400 });
   await expectFigmaBox(page, images.nth(1), { x: 164, y: 922, width: 800, height: 400 });
   await expect(page.locator('.shore-waves')).toHaveCount(1);
-  await expect(page.locator('.lake-wave')).toHaveCount(2);
+  await expect(page.locator('.lake-wave')).toHaveCount(0);
   await page.screenshot({ path: '.reference/week-1-project-desktop.png', fullPage: true });
   await page.getByRole('link', { name: 'Back to map' }).last().click();
   await expect(page.getByRole('button', { name: weekOne })).toBeFocused();

@@ -23,6 +23,7 @@
 body { margin: 0; min-width: 280px; }
 button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+.site-frame { min-height: 100svh; overflow: hidden; }
 .portfolio {
   position: relative;
   /* Fit the map to a laptop's viewing height and keep the same scale on every page. */
@@ -30,7 +31,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-
   margin: 12px auto;
   container-type: inline-size;
 }
-.map-canvas { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; isolation: isolate; }
+.map-canvas { position: relative; width: 100%; aspect-ratio: 1; isolation: isolate; }
+.scene-background { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .artwork, .map-layer, .grid-line, .train, .train-window { position: absolute; pointer-events: none; }
 .artwork { display: block; user-select: none; }
 .map-layer { inset: 0; }
@@ -193,7 +195,27 @@ h1 span { position: absolute; white-space: nowrap; }
   overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
 }
 .route-artwork { background: var(--route-color); mask-size: 100% 100%; mask-repeat: no-repeat; }
-.project-canvas, .projects-canvas { position: relative; isolation: isolate; overflow: hidden; }
+/* Clip route extensions at the browser edges, while the original artwork keeps its scale. */
+.route-extension {
+  position: absolute; pointer-events: none; background: var(--route-color);
+  left: calc(var(--route-x) - var(--route-width) / 2); top: var(--route-y);
+}
+.route-extension-north, .route-extension-south { width: var(--route-width); height: calc(100vh + 2px); }
+.route-extension-north { top: calc(var(--route-y) + 1px); transform: translateY(-100%); }
+.route-extension-south { top: calc(var(--route-y) - 1px); }
+.route-extension-west, .route-extension-east, .route-extension-northwest {
+  left: var(--route-x); top: calc(var(--route-y) - var(--route-width) / 2);
+  width: calc(100vw + 2px); height: var(--route-width);
+}
+.route-extension-west { left: calc(var(--route-x) + 1px); transform: translateX(-100%); }
+.route-extension-east { left: calc(var(--route-x) - 1px); }
+.route-extension-northwest {
+  /* Match the blue diagonal's original 165 × 144 slope. */
+  width: calc(max(100vw, 100vh) + 2px); margin-left: 1px;
+  transform-origin: calc(100% - 1px) 50%; transform: translateX(-100%) rotate(41.11209deg);
+}
+.project-canvas, .projects-canvas { position: relative; isolation: isolate; }
+.projects-canvas { overflow: hidden; }
 .project-canvas:focus { outline: none; }
 .project-scene { position: relative; height: calc(100cqw * 1580 / 1254); }
 .project-content {
