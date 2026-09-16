@@ -62,7 +62,7 @@ test('About and Contact dialogs close with Escape and restore focus', async ({ p
   }
 });
 
-test('Week 1 opens with matching route color, blank copy, an image, and an interactive model', async ({ page }) => {
+test('Week 1 opens with matching route color, paired images, and an interactive model', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
@@ -72,8 +72,10 @@ test('Week 1 opens with matching route color, blank copy, an image, and an inter
   await expect(page).toHaveURL(/#\/projects\/week-1$/);
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await expect(page.getByRole('heading', { name: 'Week 1' })).toHaveCount(1);
-  await expect(page.locator('.project-media')).toHaveCount(2);
-  await expect(page.locator('.project-photo')).toHaveAttribute('src', /media\/enclosure\.png$/);
+  await expect(page.locator('.project-media')).toHaveCount(3);
+  await expect(page.locator('.project-photo')).toHaveCount(2);
+  await expect(page.locator('.project-photo').nth(0)).toHaveAttribute('src', /media\/razer-exploded\.png$/);
+  await expect(page.locator('.project-photo').nth(1)).toHaveAttribute('src', /media\/razer-enclosure\.png$/);
   await expectModelLoaded(page);
   await expect(page.locator('.project-title, .project-summary, .project-copy-space p')).toHaveCount(0);
   await expect(page.getByText(/View project|Source code|Project name|Image 0[12]|Lake|Michigan/)).toHaveCount(0);
@@ -84,7 +86,8 @@ test('Week 1 opens with matching route color, blank copy, an image, and an inter
   await expectLocalArtwork(page);
   const media = page.locator('.project-media');
   await expectFigmaBox(page, media.nth(0), { x: 164, y: 404, width: 800, height: 450 });
-  await expectFigmaBox(page, media.nth(1), { x: 164, y: 972, width: 800, height: 450 });
+  await expectFigmaBox(page, media.nth(1), { x: 164, y: 874, width: 800, height: 450 });
+  await expectFigmaBox(page, media.nth(2), { x: 164, y: 1442, width: 800, height: 450 });
   await expect(page.locator('.shore-waves')).toHaveCount(1);
   await expect(page.locator('.lake-wave')).toHaveCount(0);
   await page.screenshot({ path: '.reference/week-1-project-desktop.png', fullPage: true });
@@ -104,7 +107,7 @@ test('Projects lists the available projects separately and supports browser hist
   await page.getByRole('button', { name: 'Week 1 Blue Line' }).click();
   await expect(page.locator('.project-canvas')).toBeVisible();
   await page.reload();
-  await expect(page.locator('.project-media')).toHaveCount(2);
+  await expect(page.locator('.project-media')).toHaveCount(3);
   await page.goBack();
   await expect(page.getByRole('button', { name: 'Week 1 Blue Line' })).toBeFocused();
   await page.goForward();
@@ -141,7 +144,7 @@ for (const width of [320, 390, 713, 768, 900, 1440]) {
       await expectFigmaBox(page, page.getByRole('navigation'), { x: 366, y: 17, width: 488, height: 60 });
       await expectFigmaBox(page, page.locator('.back-to-map-top'), { x: 48, y: 92, width: 160, height: 44 });
       await expectFigmaBox(page, page.locator('.back-to-map-top img'), { x: 48, y: 102, width: 24, height: 24 });
-      await expectFigmaBox(page, page.getByRole('link', { name: 'Back to map' }).last(), { x: 792, y: 1540, width: 172, height: 48 });
+      await expectFigmaBox(page, page.getByRole('link', { name: 'Back to map' }).last(), { x: 792, y: 2010, width: 172, height: 48 });
     }
     for (const image of await page.locator('.project-media').all()) {
       const box = await image.boundingBox();
@@ -171,7 +174,7 @@ test('the colored enclosure rotates, zooms, and resets', async ({ page }) => {
   const viewer = page.locator('model-viewer');
   await viewer.scrollIntoViewIfNeeded();
   const dimensions = await viewer.evaluate(node => (node as ModelViewerElement).getDimensions());
-  // The larger uncolored duplicate must not influence the displayed model or its framing.
+  // The selected colored assembly must frame independently from unused scene objects.
   expect(Math.max(dimensions.x, dimensions.y, dimensions.z)).toBeLessThan(50);
   const initial = await viewer.evaluate(node => (node as ModelViewerElement).getCameraOrbit());
   const box = (await viewer.boundingBox())!;

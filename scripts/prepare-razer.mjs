@@ -13,9 +13,9 @@ if (!source || resolve(source) === destination) {
 
 const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
 const original = await io.read(source);
-const assemblies = original.getRoot().listNodes().filter(node => node.getName() === 'Razer Enclosure.001');
+const assemblies = original.getRoot().listNodes().filter(node => node.getMesh() && node.getName().startsWith('Razer Enclosure'));
 if (assemblies.length !== 1 || !assemblies[0].getMesh()) {
-  throw new Error('Expected one colored assembly named Razer Enclosure.001. The website model was not changed.');
+  throw new Error('Expected one colored Razer enclosure assembly. The website model was not changed.');
 }
 
 // Copy the requested colored assembly and its materials, leaving the source export untouched.

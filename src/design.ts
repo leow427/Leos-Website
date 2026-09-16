@@ -13,11 +13,11 @@ export const routeColors = {
   Brown: '#854f0f', Red: '#d00b29', Blue: '#047fdf', Green: '#028a4c', Orange: '#fd821a',
 } as const;
 
-export type ProjectMedia = {
-  kind: 'image' | 'model';
-  file: string;
-  alt: string;
-};
+export type ProjectImage = { file: string; alt: string };
+
+export type ProjectMedia =
+  | { kind: 'image-pair'; images: [ProjectImage, ProjectImage] }
+  | { kind: 'model'; file: string; alt: string };
 
 export type Project = {
   id: string;
@@ -35,7 +35,10 @@ export type Project = {
 export const projects: Project[] = [
   { id: 'week-1', label: 'Week 1', line: 'Blue', x: 391.8928527832031, y: 355.8519287109375,
     labelX: 429, labelY: 327, media: [
-      { kind: 'image', file: 'enclosure.png', alt: 'Exploded view of the Razer enclosure, front frame, and cooling fan' },
+      { kind: 'image-pair', images: [
+        { file: 'razer-exploded.png', alt: 'Exploded view of the Razer enclosure, front frame, and cooling fan' },
+        { file: 'razer-enclosure.png', alt: 'Assembled Razer enclosure with front cooling fan' },
+      ] },
       { kind: 'model', file: 'razer.glb', alt: 'Interactive 3D model of the Razer enclosure' },
     ] },
 ];

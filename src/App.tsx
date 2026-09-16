@@ -11,7 +11,7 @@ function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = 
 }
 
 function Lake({ project = false }: { project?: boolean }) {
-  const height = project ? 1680 : 1136;
+  const height = project ? 2148 : 1136;
   const stretch = height / 1136;
   return <div className="lake-layer" aria-hidden="true" style={{ '--lake-height': unit(height) } as CSSProperties}>
     <Artwork name={project ? 'project-lake' : 'lake-michigan'} x={1014} width={240} height={height} />
@@ -206,24 +206,28 @@ function ProjectPage({ project }: { project: Project }) {
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">
         <div className="scene-background" aria-hidden="true">
-          <StreetGrid height={1680} />
+          <StreetGrid height={2148} />
         </div>
         <Lake project />
         <RouteExtension x={10} y={144} direction="west" width={16} />
-        <RouteExtension x={964} y={1636} direction="east" width={16} />
-        <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1508} />
+        <RouteExtension x={964} y={2106} direction="east" width={16} />
+        <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1978} />
         <div className="project-content">
           <header className="project-introduction">
             <img src={asset('chicago-stars')} alt="" width="94" height="17" />
             <h1 id="project-title" className="visually-hidden">{project.label}</h1>
           </header>
           {project.media.map((media, index) => (
-            <section className="project-image-block" key={media.file} aria-label={`Project media ${index + 1}`}>
-              <div className={`project-media project-media-${media.kind}`}>
-                {media.kind === 'image'
-                  ? <img className="project-photo" src={mediaAsset(media.file)} alt={media.alt} width="1600" height="900" />
-                  : <ModelViewer src={mediaAsset(media.file)} alt={media.alt} />}
-              </div>
+            <section className="project-image-block" key={media.kind === 'model' ? media.file : media.images[0].file} aria-label={`Project media ${index + 1}`}>
+              {media.kind === 'image-pair'
+                ? <div className="project-image-pair">
+                  {media.images.map(({ file, alt }) => <div className="project-media" key={file}>
+                    <img className="project-photo" src={mediaAsset(file)} alt={alt} width="3024" height="1701" />
+                  </div>)}
+                </div>
+                : <div className="project-media project-media-model">
+                  <ModelViewer src={mediaAsset(media.file)} alt={media.alt} />
+                </div>}
               {/* Reserve the Figma copy area until project descriptions are added. */}
               <div className="project-copy-space" aria-hidden="true" />
             </section>
@@ -232,8 +236,8 @@ function ProjectPage({ project }: { project: Project }) {
         </div>
         <RouteArtwork name="project-station-halo" x={70} y={219} width={52} height={52} />
         <Artwork name="station" x={72.25} y={223.25} width={47.5} height={47.5} />
-        <Artwork name="project-station-small" x={79.671875} y={873.046875} width={32.65625} height={32.65625} />
-        <Artwork name="project-station-small" x={79.671875} y={1441.046875} width={32.65625} height={32.65625} />
+        <Artwork name="project-station-small" x={79.671875} y={1293.046875} width={32.65625} height={32.65625} />
+        <Artwork name="project-station-small" x={79.671875} y={1901.046875} width={32.65625} height={32.65625} />
         <span className="train project-train" style={place(90, 700, 12, 34)} aria-hidden="true" />
         {[706, 714, 722].map((y) => <span key={y} className="train-window project-train-window"
           style={place(94, y, 4, 4)} aria-hidden="true" />)}
@@ -251,19 +255,20 @@ function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) 
         <img className="index-stars" src={asset('chicago-stars')} alt="" width="94" height="17" />
         <h1 id="projects-title" tabIndex={-1}>Projects</h1>
         <ul className="project-list">
-          {projects.map((project) => (
-            <li key={project.id}>
+          {projects.map((project) => {
+            const preview = project.media.find((media) => media.kind === 'image-pair');
+            return <li key={project.id}>
               <button type="button" className="project-card" id={`project-card-${project.id}`}
                 style={{ '--route-color': routeColors[project.line] } as CSSProperties}
                 onClick={() => onProject(project)}>
                 <span className="project-card-preview" aria-hidden="true">
-                  <img src={mediaAsset(project.media[0].file)} alt="" width="1600" height="900" />
+                  {preview && <img src={mediaAsset(preview.images[1].file)} alt="" width="3024" height="1701" />}
                 </span>
                 <span className="project-card-label">{project.label}</span>
                 <span className="project-card-line">{project.line} Line</span>
               </button>
-            </li>
-          ))}
+            </li>;
+          })}
         </ul>
         <BackToMap />
       </div>
