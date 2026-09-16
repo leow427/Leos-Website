@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="975" height="1056" viewBox="0 0 975 1056" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Transit Lines">
+<path id="Brown Loop" d="M588 198H877C933.667 198 962 226.333 962 283V709C962 765.667 933.667 794 877 794H588C531.333 794 503 765.667 503 709V283C503 226.333 531.333 198 588 198Z" stroke="#854F0F" stroke-width="26" stroke-linejoin="round"/>
+<path id="Brown North Tail" d="M503 12V283" stroke="#854F0F" stroke-width="26" stroke-linejoin="round"/>
+<path id="Purple Loop" d="M607 228H859C907 228 931 252 931 300V692C931 740 907 764 859 764H607C559 764 535 740 535 692V300C535 252 559 228 607 228Z" stroke="#44268A" stroke-width="26" stroke-linejoin="round"/>
+<path id="Purple North Tail" d="M535 12V300" stroke="#44268A" stroke-width="26" stroke-linejoin="round"/>
+<path id="Orange Loop" d="M623 258H844C882.667 258 902 277.333 902 316V677C902 715.667 882.667 735 844 735H623C584.333 735 565 715.667 565 677V316C565 277.333 584.333 258 623 258Z" stroke="#FD821A" stroke-width="26" stroke-linejoin="round"/>
+<path id="Orange South Tail" d="M902 316V1056" stroke="#FD821A" stroke-width="26" stroke-linejoin="round"/>
+<path id="Green Line" d="M277 285H807C851 285 873 307 873 351V1056" stroke="#028A4C" stroke-width="26" stroke-linejoin="round"/>
+<path id="Pink Loop" d="M641 313H797C827.667 313 843 328.333 843 359V660C843 690.667 827.667 706 797 706H641C610.333 706 595 690.667 595 660V359C595 328.333 610.333 313 641 313Z" stroke="#FC81AD" stroke-width="26" stroke-linejoin="round"/>
+<path id="Pink West Tail" d="M277 313H641" stroke="#FC81AD" stroke-width="26" stroke-linejoin="round"/>
+<path id="Blue Line" d="M276 199L441 343H695C724.333 343 739 357.667 739 387V624C739 653.333 724.333 668 695 668H0" stroke="#047FDF" stroke-width="26" stroke-linejoin="round"/>
+<path id="Red Line" d="M791 0V1056" stroke="#D00B29" stroke-width="26" stroke-linejoin="round"/>
+</g>
+</svg>
