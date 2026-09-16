@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { asset, panelContent, place, stations, unit } from './design';
-import type { PageName } from './design';
+import { asset, panelContent, place, projects, routeColors, unit } from './design';
+import type { InformationPage, PageName, Project } from './design';
 
 function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = '' }: {
   name: string; x?: number; y?: number; width?: number; height?: number; className?: string;
@@ -9,21 +9,20 @@ function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = 
   return <img className={`artwork ${className}`} src={asset(name)} alt="" draggable="false" style={place(x, y, width, height)} />;
 }
 
-function StreetGrid() {
+function StreetGrid({ height = 1254 }: { height?: number }) {
   return (
     <div className="map-layer" aria-hidden="true">
-      {Array.from({ length: 26 }, (_, index) => {
-        const color = `rgba(142, 157, 164, ${index % 4 === 0 ? 0.12 : 0.06})`;
-        return ['vertical', 'horizontal'].map((direction) => (
+      {(['vertical', 'horizontal'] as const).flatMap((direction) =>
+        Array.from({ length: Math.ceil((direction === 'vertical' ? 1254 : height) / 48) }, (_, index) => (
           <span key={`${direction}-${index}`} className="grid-line" style={{
             ...place(direction === 'vertical' ? 28 + index * 48 : 0,
               direction === 'horizontal' ? 28 + index * 48 : 0,
               direction === 'vertical' ? 0.7 : 1254,
-              direction === 'horizontal' ? 0.7 : 1254),
-            backgroundColor: color,
+              direction === 'horizontal' ? 0.7 : height),
+            backgroundColor: `rgba(142, 157, 164, ${index % 4 === 0 ? 0.12 : 0.06})`,
           }} />
-        ));
-      })}
+        )),
+      )}
     </div>
   );
 }
@@ -48,19 +47,19 @@ const navigation = [
 
 type NavigationName = typeof navigation[number]['name'];
 
-function Navigation({ active, onNavigate }: { active: PageName | null; onNavigate: (page: PageName | null) => void }) {
+function Navigation({ active, onNavigate }: { active: NavigationName | null; onNavigate: (page: PageName | null) => void }) {
   const navRef = useRef<HTMLElement>(null);
   const itemRefs = useRef<Partial<Record<NavigationName, HTMLButtonElement | null>>>({});
   const [hovered, setHovered] = useState<NavigationName | null>(null);
   const [focused, setFocused] = useState<NavigationName | null>(null);
   const [pressed, setPressed] = useState(false);
   const [bubble, setBubble] = useState({ x: 0, y: 0, width: 0, height: 0 });
-  const highlighted = active ?? hovered ?? focused ?? 'Home';
+  const highlighted = hovered ?? focused ?? active;
 
   // Measure the actual buttons so the same pill also follows the mobile flex layout.
   useLayoutEffect(() => {
     const nav = navRef.current;
-    const item = itemRefs.current[highlighted];
+    const item = highlighted ? itemRefs.current[highlighted] : null;
     if (!nav || !item) return;
     const measure = () => {
       const container = nav.getBoundingClientRect();
@@ -90,16 +89,16 @@ function Navigation({ active, onNavigate }: { active: PageName | null; onNavigat
       <span className="nav-bubble" aria-hidden="true" style={{
         width: bubble.width, height: bubble.height,
         transform: `translate3d(${bubble.x}px, ${bubble.y}px, 0)`,
-        visibility: bubble.width ? 'visible' : 'hidden',
+        visibility: highlighted && bubble.width ? 'visible' : 'hidden',
       }} />
       {navigation.map(({ name, x, width, textX, textWidth }) => (
         <button type="button" key={name}
           ref={(element) => { itemRefs.current[name] = element; }}
-          className={`nav-item ${(active ?? 'Home') === name ? 'is-active' : ''} ${highlighted === name ? 'is-highlighted' : ''}`}
+          className={`nav-item ${active === name ? 'is-active' : ''} ${highlighted === name ? 'is-highlighted' : ''}`}
           style={{ left: unit(x - 1), width: unit(width) }}
-          aria-current={(active ?? 'Home') === name ? 'page' : undefined}
-          aria-haspopup={name === 'Home' ? undefined : 'dialog'}
-          aria-controls={name === 'Home' ? undefined : 'information-panel'}
+          aria-current={active === name ? 'page' : undefined}
+          aria-haspopup={name === 'About' || name === 'Contact' ? 'dialog' : undefined}
+          aria-controls={name === 'About' || name === 'Contact' ? 'information-panel' : undefined}
           onPointerEnter={(event) => { if (event.pointerType === 'mouse' || event.pointerType === 'pen') { setHovered(name); setFocused(null); } }}
           onPointerDown={() => setPressed(true)}
           onFocus={(event) => { if (event.currentTarget.matches(':focus-visible')) { setFocused(name); setHovered(null); } }}
@@ -118,44 +117,126 @@ function Navigation({ active, onNavigate }: { active: PageName | null; onNavigat
   );
 }
 
-function TransitMap({ onProject }: { onProject: () => void }) {
+function RouteArtwork({ name, x, y, width, height, className = '' }: {
+  name: string; x: number; y: number; width: number; height: number; className?: string;
+}) {
+  return <span aria-hidden="true" className={`artwork route-artwork ${className}`} style={{
+    ...place(x, y, width, height), maskImage: `url("${asset(name)}")`,
+  }} />;
+}
+
+function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
   return (
     <section className="map-canvas" aria-labelledby="portfolio-title">
       <Artwork name="paper" />
       <StreetGrid />
       <Artwork name="lake-michigan" x={1014} width={240} height={1136} />
-      <Artwork name="coastline" y={-0.16492} width={1284.38} height={1254.16492} />
       <Artwork name="transit-lines" x={53} y={104} width={975} height={1056} />
       <h1 id="portfolio-title">
         <span className="hero-name" style={place(51, 413, 274, 132)}>Leo’s</span>{' '}
         <span className="hero-portfolio" style={place(52, 529, 447, 128)}>Portfolio</span>
       </h1>
-      <Artwork name="station-halos" />
-      {stations.map(({ line, color, x, y, labelX, labelY }) => (
-        <button key={line} type="button" className="station"
-          aria-label={`${line} Line project — coming soon`}
-          aria-haspopup="dialog" aria-controls="information-panel"
-          style={{ left: unit(x + 16), top: unit(y + 16), '--route-color': color } as CSSProperties}
-          onClick={onProject}>
-          <img src={asset('station')} alt="" draggable="false" />
-          <span className="station-label" aria-hidden="true" style={{
-            '--label-x': unit(labelX - x - 16), '--label-y': unit(labelY - y - 16),
-          } as CSSProperties}>TBD</span>
-        </button>
-      ))}
-      <div className="lake-label" aria-label="Lake Michigan">
-        <span style={place(1141.5, 364, 43, 23)} aria-hidden="true">Lake</span>
-        <span style={place(1122, 393, 82, 23)} aria-hidden="true">Michigan</span>
-      </div>
-      <Artwork className="lake-wave lake-wave-wide" name="lake-wave-wide" x={1110.3753} y={461} width={81.2494} height={10} />
-      <Artwork className="lake-wave lake-wave-small" name="lake-wave-small" x={1140.3753} y={485} width={61.2494} height={10} />
+      {projects.map((project) => {
+        const { id, label, line, x, y, labelX, labelY } = project;
+        return (
+          <div key={id} style={{ '--route-color': routeColors[line] } as CSSProperties}>
+            <RouteArtwork name="project-station-halo" x={x - 10} y={y - 10} width={52} height={52} />
+            <button id={`stop-${id}`} type="button" className="station"
+              aria-label={`${label} — ${line} Line project`}
+              style={{ left: unit(x + 16), top: unit(y + 16) }}
+              onClick={() => onProject(project)}>
+              <img src={asset('station')} alt="" draggable="false" />
+              <span className="station-label" aria-hidden="true" style={{
+                '--label-x': unit(labelX - x - 16), '--label-y': unit(labelY - y - 16),
+              } as CSSProperties}>{label}</span>
+            </button>
+          </div>
+        );
+      })}
       <Artwork name="chicago-stars" x={52} y={392} width={94} height={17} />
       <MiniTrains />
     </section>
   );
 }
 
-function ComingSoonPanel({ page, onClose }: { page: PageName | null; onClose: () => void }) {
+function BackToMap({ className = '' }: { className?: string }) {
+  return <a href="#/" className={`back-to-map ${className}`}>
+    <img src={asset('back-arrow')} alt="" width="24" height="24" />
+    <span>Back to map</span>
+  </a>;
+}
+
+function ImagePlaceholder({ number }: { number: number }) {
+  return <div className="image-placeholder" role="img" aria-label={`Project image ${number} placeholder`}>
+    <img src={asset('image-placeholder')} alt="" width="44" height="44" />
+  </div>;
+}
+
+function ProjectPage({ project }: { project: Project }) {
+  return (
+    <section className="project-canvas" aria-labelledby="project-title"
+      style={{ '--route-color': routeColors[project.line] } as CSSProperties}>
+      <BackToMap className="back-to-map-top" />
+      <div className="project-scene">
+        <StreetGrid height={1580} />
+        <Artwork name="project-lake" x={1014} width={240} height={1580} />
+        <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1408} />
+        <div className="project-content">
+          <header className="project-introduction">
+            <img src={asset('chicago-stars')} alt="" width="94" height="17" />
+            <h1 id="project-title" className="visually-hidden">{project.label}</h1>
+          </header>
+          {Array.from({ length: project.imagePlaceholders }, (_, index) => (
+            <section className="project-image-block" key={index} aria-label={`Project image ${index + 1}`}>
+              <ImagePlaceholder number={index + 1} />
+              {/* Reserve the Figma copy area until project descriptions are added. */}
+              <div className="project-copy-space" aria-hidden="true" />
+            </section>
+          ))}
+          <footer className="project-footer"><BackToMap /></footer>
+        </div>
+        <RouteArtwork name="project-station-halo" x={70} y={219} width={52} height={52} />
+        <Artwork name="station" x={72.25} y={223.25} width={47.5} height={47.5} />
+        <Artwork name="project-station-small" x={79.671875} y={823.046875} width={32.65625} height={32.65625} />
+        <Artwork name="project-station-small" x={79.671875} y={1341.046875} width={32.65625} height={32.65625} />
+        <span className="train project-train" style={place(90, 700, 12, 34)} aria-hidden="true" />
+        {[706, 714, 722].map((y) => <span key={y} className="train-window project-train-window"
+          style={place(94, y, 4, 4)} aria-hidden="true" />)}
+      </div>
+    </section>
+  );
+}
+
+function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) {
+  return (
+    <section className="projects-canvas" aria-labelledby="projects-title">
+      <StreetGrid />
+      <Artwork name="lake-michigan" x={1014} width={240} height={1136} />
+      <div className="projects-index">
+        <img className="index-stars" src={asset('chicago-stars')} alt="" width="94" height="17" />
+        <h1 id="projects-title" tabIndex={-1}>Projects</h1>
+        <ul className="project-list">
+          {projects.map((project) => (
+            <li key={project.id}>
+              <button type="button" className="project-card" id={`project-card-${project.id}`}
+                style={{ '--route-color': routeColors[project.line] } as CSSProperties}
+                onClick={() => onProject(project)}>
+                <span className="project-card-preview" aria-hidden="true">
+                  <img src={asset('image-placeholder')} alt="" width="44" height="44" />
+                </span>
+                <span className="project-card-label">{project.label}</span>
+                <span className="project-card-line">{project.line} Line</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        <BackToMap />
+      </div>
+    </section>
+  );
+}
+
+function ComingSoonPanel({ page, onClose }: { page: InformationPage | null; onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const content = panelContent[page ?? 'About'];
 
@@ -188,13 +269,57 @@ function ComingSoonPanel({ page, onClose }: { page: PageName | null; onClose: ()
   );
 }
 
+type View = { kind: 'home' } | { kind: 'projects' } | { kind: 'project'; project: Project };
+
+function readView(): View {
+  if (window.location.hash === '#/projects') return { kind: 'projects' };
+  const project = projects.find(({ id }) => window.location.hash === `#/projects/${id}`);
+  return project ? { kind: 'project', project } : { kind: 'home' };
+}
+
 export default function App() {
-  const [activePage, setActivePage] = useState<PageName | null>(null);
+  const [view, setView] = useState<View>(readView);
+  const [activePanel, setActivePanel] = useState<InformationPage | null>(null);
+  const lastProject = useRef<string | null>(null);
+  const previousView = useRef(view.kind);
+
+  useEffect(() => {
+    const onHashChange = () => { setActivePanel(null); setView(readView()); };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  useEffect(() => {
+    document.title = view.kind === 'project' ? `${view.project.label} — Leo’s Portfolio`
+      : view.kind === 'projects' ? 'Projects — Leo’s Portfolio' : 'Leo’s Portfolio';
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (view.kind === 'project') {
+      lastProject.current = view.project.id;
+      document.querySelector<HTMLAnchorElement>('.back-to-map-top')?.focus({ preventScroll: true });
+    } else if (previousView.current === 'project' && lastProject.current) {
+      const prefix = view.kind === 'home' ? 'stop' : 'project-card';
+      document.getElementById(`${prefix}-${lastProject.current}`)?.focus({ preventScroll: true });
+    } else if (view.kind === 'projects') {
+      document.getElementById('projects-title')?.focus({ preventScroll: true });
+    }
+    previousView.current = view.kind;
+  }, [view]);
+
+  const openProject = (project: Project) => { window.location.hash = `/projects/${project.id}`; };
+  const navigate = (page: PageName | null) => {
+    if (page === 'About' || page === 'Contact') { setActivePanel(page); return; }
+    setActivePanel(null);
+    window.location.hash = page === 'Projects' ? '/projects' : '/';
+  };
+  const activeNavigation = activePanel ?? (view.kind === 'home' ? 'Home' : view.kind === 'projects' ? 'Projects' : null);
+
   return (
     <main className="portfolio">
-      <Navigation active={activePage} onNavigate={setActivePage} />
-      <TransitMap onProject={() => setActivePage('Projects')} />
-      <ComingSoonPanel page={activePage} onClose={() => setActivePage(null)} />
+      <Navigation active={activeNavigation} onNavigate={navigate} />
+      {view.kind === 'home' && <TransitMap onProject={openProject} />}
+      {view.kind === 'project' && <ProjectPage project={view.project} />}
+      {view.kind === 'projects' && <ProjectsPage onProject={openProject} />}
+      <ComingSoonPanel page={activePanel} onClose={() => setActivePanel(null)} />
     </main>
   );
 }

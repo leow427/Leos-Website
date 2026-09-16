@@ -1,6 +1,6 @@
 # Leo’s Portfolio
 
-A React + TypeScript implementation of the **APPROVED SNAPSHOT — Polished v1** page in [Leo CTA Portfolio](https://www.figma.com/design/lZzu3s65EB0ncM6igvjU4d/Leo-CTA-Portfolio?node-id=33-4).
+A React + TypeScript implementation of the **APPROVED SNAPSHOT — Polished v1** map and **Project pages — CTA** template in [Leo CTA Portfolio](https://www.figma.com/design/lZzu3s65EB0ncM6igvjU4d/Leo-CTA-Portfolio?node-id=33-4).
 
 ## Run locally
 
@@ -22,10 +22,13 @@ The production build is in `dist/`. All artwork and fonts are served locally, an
 
 - The approved 1254 × 1254 desktop composition is reproduced with the original Figma SVG exports, proportional coordinates, Inter typography, street grid, station halos, and static train accents.
 - Text, navigation, stations, and trains are React/HTML elements, not a flattened screenshot.
-- The navigation pill follows pointer hover and keyboard focus with a soft spring and press feedback. The white shoreline crests roll toward the coast in staggered sets, fading as they arrive; the two wave marks below “Lake Michigan” remain still. Station hover/focus gently enlarges the marker and adds a route-colored glow. Animations respect reduced-motion preferences.
-- The map scales proportionally up to its original size. At widths of 700px or less, the menu sits above the map with touch-friendly controls.
-- About, Projects, and Contact open simple coming-soon dialogs. Every station opens Projects. Dialogs support keyboard focus, Escape, backdrop dismissal, and a return button.
-- Approved station labels remain **TBD**. Update `src/design.ts` when content is ready.
+- The navigation pill follows pointer hover and keyboard focus with a soft spring and press feedback. Station hover/focus gently enlarges the marker and adds a route-colored glow. Animations respect reduced-motion preferences. The lake has no text, waves, or ripple overlays.
+- The map scales proportionally up to its original size. At widths of 900px or less, the menu sits above the map with touch-friendly controls.
+- **Week 1** is the only published stop. The other colored routes remain on the map, with their stops and halos removed.
+- The blue stop opens its own project page, matching [the editable Figma template](https://www.figma.com/design/lZzu3s65EB0ncM6igvjU4d/Leo-CTA-Portfolio?node-id=62-3). It includes two 800 × 400 image placeholders, blank areas reserved for copy, and both Back to map links. View project and Source code buttons are omitted.
+- The Projects tab opens a separate index of every published project. Individual project pages leave the navigation tabs unselected. Hash URLs support direct links, reload, and browser back/forward navigation.
+- About and Contact open coming-soon dialogs with keyboard focus, Escape, backdrop dismissal, and a return button.
+- Add future projects to `projects` in `src/design.ts`; their line automatically supplies the matching map halo, project route, and train-window colors.
 
 ## Browser checks
 
@@ -34,7 +37,7 @@ npx playwright install chromium
 npm test
 ```
 
-The checks cover local artwork loading, runtime errors, all navigation panels, keyboard dismissal and focus restoration, station interaction, and responsive layouts.
+The checks cover local artwork loading, runtime errors, navigation and browser history, keyboard dismissal and focus restoration, the Week 1 stop, route colors, exact desktop image placement, and responsive layouts.
 
 The bundled Inter 3.19 font matches the version used in Figma and is distributed under the SIL Open Font License in `public/fonts/LICENSE.txt`.
 

@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="240" height="1580" viewBox="0 0 240 1580" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path id="Lake Michigan" d="M0 0H240V1580C226 1567.48 216 1546.62 212 1521.58C202 1464.56 179 1433.96 171 1392.24C163 1349.12 144 1314.35 137 1265.67C131 1221.16 140 1178.05 125 1134.93C112 1097.38 124 1058.43 118 1019.49C109 965.246 133 933.257 115 873.451C99 820.599 77 787.218 69 734.366C62 685.687 69 642.57 52 600.845C36 559.12 51 516.004 38 468.715C27 425.599 41 389.437 28 347.711C17 311.549 40 280.951 22 240.616C7 204.454 20 165.511 7 126.567C-3 93.1866 8 45.8979 0 0Z" fill="url(#paint0_linear_0_30)"/>
+<defs>
+<linearGradient id="paint0_linear_0_30" x1="0" y1="790" x2="240" y2="790" gradientUnits="userSpaceOnUse">
+<stop stop-color="#C2EAF7"/>
+<stop offset="1" stop-color="#97D8F3"/>
+</linearGradient>
+</defs>
+</svg>
