@@ -33,8 +33,8 @@ export type Project = {
 // Only published stops appear on the map and in the project index.
 // Each project's line supplies the map, detail-page, and train accent color.
 export const projects: Project[] = [
-  { id: 'week-1', label: 'Week 1', line: 'Blue', x: 246.8928527832031, y: 229.8519287109375,
-    labelX: 284, labelY: 201, media: [
+  { id: 'week-1', label: 'Week 1', line: 'Blue', x: 178.1428527832031, y: 169.8519287109375,
+    labelX: 215.25, labelY: 141, media: [
       { kind: 'image-pair', images: [
         { file: 'razer-exploded.png', alt: 'Exploded view of the Razer enclosure, front frame, and cooling fan' },
         { file: 'razer-enclosure.png', alt: 'Assembled Razer enclosure with front cooling fan' },
