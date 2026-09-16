@@ -1,7 +1,13 @@
 import { expect, test } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
+import type { ModelViewerElement } from '@google/model-viewer';
 
 const weekOne = 'Week 1 — Blue Line project';
+
+async function expectModelLoaded(page: Page) {
+  await expect(page.locator('.model-viewer-shell')).toHaveAttribute('data-status', 'ready', { timeout: 20000 });
+  await expect.poll(() => page.locator('model-viewer').evaluate(node => (node as ModelViewerElement).loaded)).toBe(true);
+}
 
 async function expectLocalArtwork(page: Page) {
   await expect.poll(() => page.locator('main img').evaluateAll(nodes =>
@@ -56,7 +62,7 @@ test('About and Contact dialogs close with Escape and restore focus', async ({ p
   }
 });
 
-test('Week 1 opens the Figma page with matching route color, blank copy, and two image placeholders', async ({ page }) => {
+test('Week 1 opens with matching route color, blank copy, an image, and an interactive model', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
@@ -66,8 +72,9 @@ test('Week 1 opens the Figma page with matching route color, blank copy, and two
   await expect(page).toHaveURL(/#\/projects\/week-1$/);
   await expect(page.getByRole('dialog')).not.toBeVisible();
   await expect(page.getByRole('heading', { name: 'Week 1' })).toHaveCount(1);
-  await expect(page.locator('.image-placeholder')).toHaveCount(2);
-  await expect(page.locator('.project-content')).toHaveText('Week 1Back to map');
+  await expect(page.locator('.project-media')).toHaveCount(2);
+  await expect(page.locator('.project-photo')).toHaveAttribute('src', /media\/enclosure\.png$/);
+  await expectModelLoaded(page);
   await expect(page.locator('.project-title, .project-summary, .project-copy-space p')).toHaveCount(0);
   await expect(page.getByText(/View project|Source code|Project name|Image 0[12]|Lake|Michigan/)).toHaveCount(0);
   await expect(page.getByRole('navigation').locator('[aria-current]')).toHaveCount(0);
@@ -75,9 +82,9 @@ test('Week 1 opens the Figma page with matching route color, blank copy, and two
     getComputedStyle(node).getPropertyValue('--route-color').trim())).toBe(mapColor);
   await expect(page.locator('.project-route')).toHaveCSS('background-color', 'rgb(4, 127, 223)');
   await expectLocalArtwork(page);
-  const images = page.locator('.image-placeholder');
-  await expectFigmaBox(page, images.nth(0), { x: 164, y: 404, width: 800, height: 400 });
-  await expectFigmaBox(page, images.nth(1), { x: 164, y: 922, width: 800, height: 400 });
+  const media = page.locator('.project-media');
+  await expectFigmaBox(page, media.nth(0), { x: 164, y: 404, width: 800, height: 450 });
+  await expectFigmaBox(page, media.nth(1), { x: 164, y: 972, width: 800, height: 450 });
   await expect(page.locator('.shore-waves')).toHaveCount(1);
   await expect(page.locator('.lake-wave')).toHaveCount(0);
   await page.screenshot({ path: '.reference/week-1-project-desktop.png', fullPage: true });
@@ -97,7 +104,7 @@ test('Projects lists the available projects separately and supports browser hist
   await page.getByRole('button', { name: 'Week 1 Blue Line' }).click();
   await expect(page.locator('.project-canvas')).toBeVisible();
   await page.reload();
-  await expect(page.locator('.image-placeholder')).toHaveCount(2);
+  await expect(page.locator('.project-media')).toHaveCount(2);
   await page.goBack();
   await expect(page.getByRole('button', { name: 'Week 1 Blue Line' })).toBeFocused();
   await page.goForward();
@@ -134,18 +141,20 @@ for (const width of [320, 390, 713, 768, 900, 1440]) {
       await expectFigmaBox(page, page.getByRole('navigation'), { x: 366, y: 17, width: 488, height: 60 });
       await expectFigmaBox(page, page.locator('.back-to-map-top'), { x: 48, y: 92, width: 160, height: 44 });
       await expectFigmaBox(page, page.locator('.back-to-map-top img'), { x: 48, y: 102, width: 24, height: 24 });
-      await expectFigmaBox(page, page.getByRole('link', { name: 'Back to map' }).last(), { x: 792, y: 1440, width: 172, height: 48 });
+      await expectFigmaBox(page, page.getByRole('link', { name: 'Back to map' }).last(), { x: 792, y: 1540, width: 172, height: 48 });
     }
-    for (const image of await page.locator('.image-placeholder').all()) {
+    for (const image of await page.locator('.project-media').all()) {
       const box = await image.boundingBox();
       expect(box!.x).toBeGreaterThanOrEqual(0);
       expect(box!.x + box!.width).toBeLessThanOrEqual(width);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     if (width === 390) {
+      await expectModelLoaded(page);
       await page.screenshot({ path: '.reference/week-1-project-mobile.png', fullPage: true });
     }
     if (width === 1440) {
+      await expectModelLoaded(page);
       await page.screenshot({ path: '.reference/week-1-project-laptop.png', fullPage: true });
     }
     await page.getByRole('link', { name: 'Back to map' }).first().click();
@@ -155,6 +164,37 @@ for (const width of [320, 390, 713, 768, 900, 1440]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   });
 }
+
+test('the colored enclosure rotates, zooms, and resets', async ({ page }) => {
+  await page.goto('/#/projects/week-1');
+  await expectModelLoaded(page);
+  const viewer = page.locator('model-viewer');
+  await viewer.scrollIntoViewIfNeeded();
+  const dimensions = await viewer.evaluate(node => (node as ModelViewerElement).getDimensions());
+  // The larger uncolored duplicate must not influence the displayed model or its framing.
+  expect(Math.max(dimensions.x, dimensions.y, dimensions.z)).toBeLessThan(50);
+  const initial = await viewer.evaluate(node => (node as ModelViewerElement).getCameraOrbit());
+  const box = (await viewer.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + box.width / 2 + 100, box.y + box.height / 2 + 30, { steps: 12 });
+  await page.mouse.up();
+  await expect.poll(() => viewer.evaluate((node, theta) =>
+    Math.abs((node as ModelViewerElement).getCameraOrbit().theta - theta), initial.theta)).toBeGreaterThan(.1);
+  await page.mouse.wheel(0, -200);
+  await expect.poll(() => viewer.evaluate(node => (node as ModelViewerElement).getCameraOrbit().radius)).toBeLessThan(initial.radius);
+  await page.getByRole('button', { name: 'Reset 3D view' }).click();
+  await expect.poll(() => viewer.evaluate(node => (node as ModelViewerElement).getCameraOrbit().theta)).toBeCloseTo(initial.theta, 2);
+  await expect.poll(() => viewer.evaluate(node => (node as ModelViewerElement).getCameraOrbit().radius)).toBeCloseTo(initial.radius, 2);
+});
+
+test('a failed model download can be retried', async ({ page }) => {
+  await page.route('**/media/razer.glb', route => route.abort(), { times: 1 });
+  await page.goto('/#/projects/week-1');
+  await expect(page.getByRole('alert')).toContainText('The 3D model couldn’t load.', { timeout: 20000 });
+  await page.getByRole('button', { name: 'Try again' }).click();
+  await expectModelLoaded(page);
+});
 
 test('the original shoreline animation plays and respects reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });

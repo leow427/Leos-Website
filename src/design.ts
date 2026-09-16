@@ -7,10 +7,17 @@ export const place = (x: number, y: number, width: number, height: number): CSSP
   left: unit(x), top: unit(y), width: unit(width), height: unit(height),
 });
 export const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name}.svg`;
+export const mediaAsset = (name: string) => `${import.meta.env.BASE_URL}media/${name}`;
 
 export const routeColors = {
   Brown: '#854f0f', Red: '#d00b29', Blue: '#047fdf', Green: '#028a4c', Orange: '#fd821a',
 } as const;
+
+export type ProjectMedia = {
+  kind: 'image' | 'model';
+  file: string;
+  alt: string;
+};
 
 export type Project = {
   id: string;
@@ -20,14 +27,17 @@ export type Project = {
   y: number;
   labelX: number;
   labelY: number;
-  imagePlaceholders: number;
+  media: ProjectMedia[];
 };
 
 // Only published stops appear on the map and in the project index.
 // Each project's line supplies the map, detail-page, and train accent color.
 export const projects: Project[] = [
   { id: 'week-1', label: 'Week 1', line: 'Blue', x: 391.8928527832031, y: 355.8519287109375,
-    labelX: 429, labelY: 327, imagePlaceholders: 2 },
+    labelX: 429, labelY: 327, media: [
+      { kind: 'image', file: 'enclosure.png', alt: 'Exploded view of the Razer enclosure, front frame, and cooling fan' },
+      { kind: 'model', file: 'razer.glb', alt: 'Interactive 3D model of the Razer enclosure' },
+    ] },
 ];
 
 export type PageName = 'About' | 'Projects' | 'Contact';

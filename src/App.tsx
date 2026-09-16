@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { asset, panelContent, place, projects, routeColors, unit } from './design';
+import { asset, mediaAsset, panelContent, place, projects, routeColors, unit } from './design';
 import type { InformationPage, PageName, Project } from './design';
+import ModelViewer from './ModelViewer';
 
 function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = '' }: {
   name: string; x?: number; y?: number; width?: number; height?: number; className?: string;
@@ -10,7 +11,7 @@ function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = 
 }
 
 function Lake({ project = false }: { project?: boolean }) {
-  const height = project ? 1580 : 1136;
+  const height = project ? 1680 : 1136;
   const stretch = height / 1136;
   return <div className="lake-layer" aria-hidden="true" style={{ '--lake-height': unit(height) } as CSSProperties}>
     <Artwork name={project ? 'project-lake' : 'lake-michigan'} x={1014} width={240} height={height} />
@@ -198,12 +199,6 @@ function BackToMap({ className = '' }: { className?: string }) {
   </a>;
 }
 
-function ImagePlaceholder({ number }: { number: number }) {
-  return <div className="image-placeholder" role="img" aria-label={`Project image ${number} placeholder`}>
-    <img src={asset('image-placeholder')} alt="" width="44" height="44" />
-  </div>;
-}
-
 function ProjectPage({ project }: { project: Project }) {
   return (
     <section className="project-canvas" aria-labelledby="project-title" tabIndex={-1}
@@ -211,20 +206,24 @@ function ProjectPage({ project }: { project: Project }) {
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">
         <div className="scene-background" aria-hidden="true">
-          <StreetGrid height={1580} />
+          <StreetGrid height={1680} />
         </div>
         <Lake project />
         <RouteExtension x={10} y={144} direction="west" width={16} />
-        <RouteExtension x={964} y={1536} direction="east" width={16} />
-        <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1408} />
+        <RouteExtension x={964} y={1636} direction="east" width={16} />
+        <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1508} />
         <div className="project-content">
           <header className="project-introduction">
             <img src={asset('chicago-stars')} alt="" width="94" height="17" />
             <h1 id="project-title" className="visually-hidden">{project.label}</h1>
           </header>
-          {Array.from({ length: project.imagePlaceholders }, (_, index) => (
-            <section className="project-image-block" key={index} aria-label={`Project image ${index + 1}`}>
-              <ImagePlaceholder number={index + 1} />
+          {project.media.map((media, index) => (
+            <section className="project-image-block" key={media.file} aria-label={`Project media ${index + 1}`}>
+              <div className={`project-media project-media-${media.kind}`}>
+                {media.kind === 'image'
+                  ? <img className="project-photo" src={mediaAsset(media.file)} alt={media.alt} width="1600" height="900" />
+                  : <ModelViewer src={mediaAsset(media.file)} alt={media.alt} />}
+              </div>
               {/* Reserve the Figma copy area until project descriptions are added. */}
               <div className="project-copy-space" aria-hidden="true" />
             </section>
@@ -233,8 +232,8 @@ function ProjectPage({ project }: { project: Project }) {
         </div>
         <RouteArtwork name="project-station-halo" x={70} y={219} width={52} height={52} />
         <Artwork name="station" x={72.25} y={223.25} width={47.5} height={47.5} />
-        <Artwork name="project-station-small" x={79.671875} y={823.046875} width={32.65625} height={32.65625} />
-        <Artwork name="project-station-small" x={79.671875} y={1341.046875} width={32.65625} height={32.65625} />
+        <Artwork name="project-station-small" x={79.671875} y={873.046875} width={32.65625} height={32.65625} />
+        <Artwork name="project-station-small" x={79.671875} y={1441.046875} width={32.65625} height={32.65625} />
         <span className="train project-train" style={place(90, 700, 12, 34)} aria-hidden="true" />
         {[706, 714, 722].map((y) => <span key={y} className="train-window project-train-window"
           style={place(94, y, 4, 4)} aria-hidden="true" />)}
@@ -258,7 +257,7 @@ function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) 
                 style={{ '--route-color': routeColors[project.line] } as CSSProperties}
                 onClick={() => onProject(project)}>
                 <span className="project-card-preview" aria-hidden="true">
-                  <img src={asset('image-placeholder')} alt="" width="44" height="44" />
+                  <img src={mediaAsset(project.media[0].file)} alt="" width="1600" height="900" />
                 </span>
                 <span className="project-card-label">{project.label}</span>
                 <span className="project-card-line">{project.line} Line</span>
