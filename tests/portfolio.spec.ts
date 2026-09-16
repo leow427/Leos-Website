@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 const weekOne = 'Week 1 — Blue Line project';
 
-async function expectLocalArtwork(page: import('@playwright/test').Page) {
+async function expectLocalArtwork(page: Page) {
   await expect.poll(() => page.locator('main img').evaluateAll(nodes =>
     nodes.every(node => {
       const img = node as HTMLImageElement;
@@ -11,7 +12,17 @@ async function expectLocalArtwork(page: import('@playwright/test').Page) {
   )).toBe(true);
 }
 
-test('the map only shows Week 1, with no retired stops or lake decorations', async ({ page }) => {
+async function expectFigmaBox(page: Page, element: Locator, design: { x: number; y: number; width: number; height: number }) {
+  const scene = (await page.locator('.project-scene').boundingBox())!;
+  const box = (await element.boundingBox())!;
+  const scale = scene.width / 1254;
+  expect(Math.abs(box.x - scene.x - design.x * scale)).toBeLessThan(1);
+  expect(Math.abs(box.y - scene.y - design.y * scale)).toBeLessThan(1);
+  expect(Math.abs(box.width - design.width * scale)).toBeLessThan(1);
+  expect(Math.abs(box.height - design.height * scale)).toBeLessThan(1);
+}
+
+test('the map shows only Week 1, restored waves, and no lake label', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
@@ -22,7 +33,9 @@ test('the map only shows Week 1, with no retired stops or lake decorations', asy
   await expect(page.locator('.station-label')).toHaveText('Week 1');
   await expect(page.getByText('TBD', { exact: true })).toHaveCount(0);
   await expect(page.getByText(/Lake|Michigan/)).toHaveCount(0);
-  await expect(page.locator('img[src*="wave"], img[src*="coastline"], img[src*="station-halos"]')).toHaveCount(0);
+  await expect(page.locator('.shore-waves')).toHaveCount(1);
+  await expect(page.locator('.lake-wave')).toHaveCount(2);
+  await expect(page.locator('img[src*="station-halos"]')).toHaveCount(0);
   await expect(page.getByRole('navigation').getByRole('button', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
   await expectLocalArtwork(page);
   await page.screenshot({ path: '.reference/week-1-map-desktop.png', fullPage: true });
@@ -63,10 +76,10 @@ test('Week 1 opens the Figma page with matching route color, blank copy, and two
   await expect(page.locator('.project-route')).toHaveCSS('background-color', 'rgb(4, 127, 223)');
   await expectLocalArtwork(page);
   const images = page.locator('.image-placeholder');
-  const first = await images.nth(0).boundingBox();
-  const second = await images.nth(1).boundingBox();
-  expect(first).toEqual({ x: 164, y: 404, width: 800, height: 400 });
-  expect(second).toEqual({ x: 164, y: 922, width: 800, height: 400 });
+  await expectFigmaBox(page, images.nth(0), { x: 164, y: 404, width: 800, height: 400 });
+  await expectFigmaBox(page, images.nth(1), { x: 164, y: 922, width: 800, height: 400 });
+  await expect(page.locator('.shore-waves')).toHaveCount(1);
+  await expect(page.locator('.lake-wave')).toHaveCount(2);
   await page.screenshot({ path: '.reference/week-1-project-desktop.png', fullPage: true });
   await page.getByRole('link', { name: 'Back to map' }).last().click();
   await expect(page.getByRole('button', { name: weekOne })).toBeFocused();
@@ -104,16 +117,24 @@ for (const width of [320, 390, 713, 768, 900, 1440]) {
     const map = await page.locator('.map-canvas').boundingBox();
     expect(map).not.toBeNull();
     expect(Math.abs(map!.width - map!.height)).toBeLessThan(1);
+    if (width > 600) expect(map!.y + map!.height).toBeLessThanOrEqual(900);
     await page.getByRole('button', { name: weekOne }).focus();
     await page.keyboard.press('Enter');
     await expect(page.locator('.project-canvas')).toBeVisible();
+    await expect(page.locator('.project-canvas')).toBeFocused();
+    await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Back to map' }).first()).toBeFocused();
-    if (width <= 900) {
+    if (width <= 600) {
       const back = await page.getByRole('link', { name: 'Back to map' }).first().boundingBox();
       const scene = await page.locator('.project-scene').boundingBox();
       const footer = await page.getByRole('link', { name: 'Back to map' }).last().boundingBox();
       expect(back!.y + back!.height).toBeLessThanOrEqual(scene!.y);
       expect(footer!.y).toBeGreaterThanOrEqual(scene!.y + scene!.height);
+    } else {
+      await expectFigmaBox(page, page.getByRole('navigation'), { x: 366, y: 17, width: 488, height: 60 });
+      await expectFigmaBox(page, page.locator('.back-to-map-top'), { x: 48, y: 92, width: 160, height: 44 });
+      await expectFigmaBox(page, page.locator('.back-to-map-top img'), { x: 48, y: 102, width: 24, height: 24 });
+      await expectFigmaBox(page, page.getByRole('link', { name: 'Back to map' }).last(), { x: 792, y: 1440, width: 172, height: 48 });
     }
     for (const image of await page.locator('.image-placeholder').all()) {
       const box = await image.boundingBox();
@@ -124,6 +145,9 @@ for (const width of [320, 390, 713, 768, 900, 1440]) {
     if (width === 390) {
       await page.screenshot({ path: '.reference/week-1-project-mobile.png', fullPage: true });
     }
+    if (width === 1440) {
+      await page.screenshot({ path: '.reference/week-1-project-laptop.png', fullPage: true });
+    }
     await page.getByRole('link', { name: 'Back to map' }).first().click();
     await expect(page.getByRole('button', { name: weekOne })).toBeFocused();
     await page.getByRole('navigation').getByRole('button', { name: 'Projects' }).click();
@@ -131,3 +155,13 @@ for (const width of [320, 390, 713, 768, 900, 1440]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   });
 }
+
+test('the original shoreline animation plays and respects reduced motion', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/assets/coastline.svg');
+  const crest = page.locator('[id="Shoreline / inset contour"]');
+  const start = await crest.evaluate(node => getComputedStyle(node).transform);
+  await expect.poll(() => crest.evaluate(node => getComputedStyle(node).transform)).not.toBe(start);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(crest).toHaveCSS('animation-name', 'none');
+});

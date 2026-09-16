@@ -23,7 +23,13 @@
 body { margin: 0; min-width: 280px; }
 button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
-.portfolio { position: relative; width: 100%; max-width: 1254px; margin: 0 auto; container-type: inline-size; }
+.portfolio {
+  position: relative;
+  /* Fit the map to a laptop's viewing height and keep the same scale on every page. */
+  width: min(100%, 1254px, max(680px, calc(100svh - 24px)));
+  margin: 12px auto;
+  container-type: inline-size;
+}
 .map-canvas { position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; isolation: isolate; }
 .artwork, .map-layer, .grid-line, .train, .train-window { position: absolute; pointer-events: none; }
 .artwork { display: block; user-select: none; }
@@ -188,6 +194,7 @@ h1 span { position: absolute; white-space: nowrap; }
 }
 .route-artwork { background: var(--route-color); mask-size: 100% 100%; mask-repeat: no-repeat; }
 .project-canvas, .projects-canvas { position: relative; isolation: isolate; overflow: hidden; }
+.project-canvas:focus { outline: none; }
 .project-scene { position: relative; height: calc(100cqw * 1580 / 1254); }
 .project-content {
   position: absolute; left: calc(100cqw * 164 / 1254); top: calc(100cqw * 168 / 1254);
@@ -209,10 +216,14 @@ h1 span { position: absolute; white-space: nowrap; }
 .project-copy-space { height: calc(100cqw * 58 / 1254); }
 .project-footer { display: flex; justify-content: flex-end; height: calc(100cqw * 48 / 1254); }
 .back-to-map {
-  display: inline-flex; align-items: center; gap: calc(100cqw * 8 / 1254);
-  min-height: 44px; width: calc(100cqw * 172 / 1254); padding: 0 calc(100cqw * 8 / 1254);
-  font-size: calc(100cqw * 16 / 1254); font-weight: 500; line-height: 1.5;
+  position: relative; display: inline-flex; align-items: center; gap: calc(100cqw * 8 / 1254);
+  height: calc(100cqw * 48 / 1254); width: calc(100cqw * 172 / 1254); padding: 0 calc(100cqw * 8 / 1254);
+  font-size: calc(100cqw * 16 / 1254); font-weight: 500; line-height: calc(100cqw * 24 / 1254);
   color: var(--blue); text-decoration: none; white-space: nowrap; border-radius: 8px;
+}
+.back-to-map::before {
+  content: ''; position: absolute; left: 0; top: 50%; width: 100%;
+  height: max(100%, 44px); transform: translateY(-50%);
 }
 .back-to-map img { width: calc(100cqw * 24 / 1254); height: calc(100cqw * 24 / 1254); }
 .back-to-map:hover { text-decoration: underline; text-underline-offset: 4px; }
@@ -240,7 +251,8 @@ h1 span { position: absolute; white-space: nowrap; }
 .project-card-line { margin: 0 24px; font-size: 14px; color: #61737d; }
 
 /* Keep the approved map intact while making the menu usable on narrow screens. */
-@media (max-width: 900px) {
+@media (max-width: 600px) {
+  .portfolio { width: 100%; margin: 0 auto; }
   .site-nav {
     position: relative;
     display: flex;
@@ -261,7 +273,7 @@ h1 span { position: absolute; white-space: nowrap; }
   .nav-item span { position: static; width: auto !important; height: auto; line-height: normal; }
   .panel-inner { padding: 24px; }
   .project-canvas { padding-top: 60px; padding-bottom: 60px; }
-  .back-to-map { width: 150px; max-width: 100%; gap: 8px; padding: 0 8px; font-size: 14px; }
+  .back-to-map { width: 150px; max-width: 100%; height: 44px; gap: 8px; padding: 0 8px; font-size: 14px; line-height: 24px; }
   .back-to-map img { width: 20px; height: 20px; }
   .back-to-map-top { left: 16px; top: 8px; padding: 0; }
   .project-footer { position: absolute; top: calc(100cqw * 1412 / 1254 + 8px); right: 0; min-height: 44px; }

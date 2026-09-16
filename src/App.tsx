@@ -9,6 +9,18 @@ function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = 
   return <img className={`artwork ${className}`} src={asset(name)} alt="" draggable="false" style={place(x, y, width, height)} />;
 }
 
+function Lake({ project = false }: { project?: boolean }) {
+  const height = project ? 1580 : 1136;
+  const stretch = height / 1136;
+  return <>
+    <Artwork name={project ? 'project-lake' : 'lake-michigan'} x={1014} width={240} height={height} />
+    <Artwork className="shore-waves" name="coastline" y={-0.16492 * stretch}
+      width={1284.38} height={1254.16492 * stretch} />
+    <Artwork className="lake-wave" name="lake-wave-wide" x={1110.3753} y={461} width={81.2494} height={10} />
+    <Artwork className="lake-wave" name="lake-wave-small" x={1140.3753} y={485} width={61.2494} height={10} />
+  </>;
+}
+
 function StreetGrid({ height = 1254 }: { height?: number }) {
   return (
     <div className="map-layer" aria-hidden="true">
@@ -130,7 +142,7 @@ function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
     <section className="map-canvas" aria-labelledby="portfolio-title">
       <Artwork name="paper" />
       <StreetGrid />
-      <Artwork name="lake-michigan" x={1014} width={240} height={1136} />
+      <Lake />
       <Artwork name="transit-lines" x={53} y={104} width={975} height={1056} />
       <h1 id="portfolio-title">
         <span className="hero-name" style={place(51, 413, 274, 132)}>Leo’s</span>{' '}
@@ -174,12 +186,12 @@ function ImagePlaceholder({ number }: { number: number }) {
 
 function ProjectPage({ project }: { project: Project }) {
   return (
-    <section className="project-canvas" aria-labelledby="project-title"
+    <section className="project-canvas" aria-labelledby="project-title" tabIndex={-1}
       style={{ '--route-color': routeColors[project.line] } as CSSProperties}>
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">
         <StreetGrid height={1580} />
-        <Artwork name="project-lake" x={1014} width={240} height={1580} />
+        <Lake project />
         <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={1408} />
         <div className="project-content">
           <header className="project-introduction">
@@ -211,7 +223,7 @@ function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) 
   return (
     <section className="projects-canvas" aria-labelledby="projects-title">
       <StreetGrid />
-      <Artwork name="lake-michigan" x={1014} width={240} height={1136} />
+      <Lake />
       <div className="projects-index">
         <img className="index-stars" src={asset('chicago-stars')} alt="" width="94" height="17" />
         <h1 id="projects-title" tabIndex={-1}>Projects</h1>
@@ -295,7 +307,9 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'instant' });
     if (view.kind === 'project') {
       lastProject.current = view.project.id;
-      document.querySelector<HTMLAnchorElement>('.back-to-map-top')?.focus({ preventScroll: true });
+      // Announce the page without drawing a focus ring around its return link.
+      // The next Tab still reaches that link, and keyboard focus stays visible.
+      document.querySelector<HTMLElement>('.project-canvas')?.focus({ preventScroll: true });
     } else if (previousView.current === 'project' && lastProject.current) {
       const prefix = view.kind === 'home' ? 'stop' : 'project-card';
       document.getElementById(`${prefix}-${lastProject.current}`)?.focus({ preventScroll: true });
