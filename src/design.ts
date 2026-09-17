@@ -47,7 +47,7 @@ export const projects: Project[] = [
         'The idea is that keyboard inserts into a recessed area, and a lid snaps into the top of the holder, and keeps the computer in place. A 120mm fan is installed in the back to intake more cool air, as this laptop gets very hot. The entire module will slot into some rails that the person either screws, or uses adhesive to stick to the wall.(I have not designed that yet).',
       ],
     },
-    reflection: "I did kind of cheat, this was a design I made in a little under an hour over the summer and forgot about with all the other things I was doing, but this assignment made me realize I didn't consider what would actually hold the computer, so I made the click fit top bracket.",
+    reflection: "I did kind of cheat though. I made the design for the back panel and the main compartment in a little under an hour over the summer and forgot about it, since I had to focus on more important things. But this assignment made me realize I didn't consider what would actually hold the computer securely in place, so I made the click fit top bracket.",
     media: [
       { kind: 'image-pair', images: [
         { file: 'razer-exploded.png', alt: 'Exploded view of the Razer enclosure, front frame, and cooling fan' },
