@@ -43,7 +43,7 @@ export const projects: Project[] = [
     introduction: {
       heading: 'This is my click fit design!',
       paragraphs: [
-        'My gaming laptop somehow was dramatic one day and its LCD panel broke without even being touched while I was working!! I didnt want this awesome computer to go to waste since it is quite nice, but it certainly was not going to be a laptop anymore, so I decided I wanted to take the screen off and try to make it a wall mounted gaming console.',
+        'My gaming laptop was dramatic one day and its LCD panel somehow broke without even being touched while I was working!! I didn’t want this nice gaming laptop to go to waste, but it certainly was not going to be a laptop anymore, so I decided I wanted to take the screen off and try to make it a wall mounted gaming console.',
         'The idea is that keyboard inserts into a recessed area, and a lid snaps into the top of the holder, and keeps the computer in place. A 120mm fan is installed in the back to intake more cool air, as this laptop gets very hot. The entire module will slot into some rails that the person either screws, or uses adhesive to stick to the wall.(I have not designed that yet).',
       ],
     },
