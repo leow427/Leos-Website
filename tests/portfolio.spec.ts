@@ -85,7 +85,7 @@ test('Week 1 opens with matching route color, paired images, and an interactive 
   await expect(page.getByRole('navigation').locator('[aria-current]')).toHaveCount(0);
   expect(await page.locator('.project-canvas').evaluate(node =>
     getComputedStyle(node).getPropertyValue('--route-color').trim())).toBe(mapColor);
-  await expect(page.locator('.project-route')).toHaveCSS('background-color', 'rgb(4, 127, 223)');
+  await expect(page.locator('.project-route path')).toHaveCSS('stroke', 'rgb(4, 127, 223)');
   await expectLocalArtwork(page);
   const mediaBoxes = await page.locator('.project-media').evaluateAll(elements => elements.map((element) => {
     const box = element.getBoundingClientRect();

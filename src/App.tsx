@@ -30,7 +30,7 @@ function StreetGrid({ height = 1254 }: { height?: number }) {
               direction === 'horizontal' ? 28 + index * 48 : 0,
               direction === 'vertical' ? 0.7 : 1254,
               direction === 'horizontal' ? 0.7 : height),
-            backgroundColor: `rgba(142, 157, 164, ${index % 4 === 0 ? 0.12 : 0.06})`,
+            backgroundColor: `rgba(142, 157, 164, ${index % 4 === 0 ? 0.28 : 0.14})`,
           }} />
         )),
       )}
@@ -144,6 +144,35 @@ function RouteExtension({ x, y, direction, color, width = 26 }: {
   } as CSSProperties} />;
 }
 
+function ProjectRoute() {
+  const routeRef = useRef<SVGSVGElement>(null);
+  const [extension, setExtension] = useState(1254);
+
+  useLayoutEffect(() => {
+    const route = routeRef.current;
+    if (!route) return;
+    const updateExtension = () => {
+      const width = route.getBoundingClientRect().width;
+      if (width > 0) setExtension(Math.ceil(window.innerWidth * 954 / width));
+    };
+    updateExtension();
+    const observer = new ResizeObserver(updateExtension);
+    observer.observe(route);
+    window.addEventListener('resize', updateExtension);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateExtension);
+    };
+  }, []);
+
+  // Draw the bends and viewport extensions together to avoid subpixel seams.
+  return <svg ref={routeRef} className="artwork project-route" aria-hidden="true" focusable="false"
+    viewBox="0 0 954 2290" preserveAspectRatio="none" fill="none" style={place(10, 136, 954, 2290)}>
+    <path d={`M${-extension} 8H38C70 8 86 24 86 56V2234C86 2266 102 2282 134 2282H${954 + extension}`}
+      stroke="var(--route-color)" strokeWidth="16" />
+  </svg>;
+}
+
 function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
   return (
     <section className="map-canvas" aria-labelledby="portfolio-title">
@@ -208,9 +237,7 @@ function ProjectPage({ project }: { project: Project }) {
           <StreetGrid height={2460} />
         </div>
         <Lake project />
-        <RouteExtension x={10} y={144} direction="west" width={16} />
-        <RouteExtension x={964} y={2418} direction="east" width={16} />
-        <RouteArtwork className="project-route" name="project-route" x={10} y={136} width={954} height={2290} />
+        <ProjectRoute />
         <div className="project-content">
           <header className="project-introduction">
             <img src={asset('chicago-stars')} alt="" width="94" height="17" />
@@ -249,7 +276,9 @@ function ProjectPage({ project }: { project: Project }) {
 function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) {
   return (
     <section className="projects-canvas" aria-labelledby="projects-title">
-      <StreetGrid />
+      <div className="scene-background" aria-hidden="true">
+        <StreetGrid />
+      </div>
       <Lake />
       <div className="projects-index">
         <img className="index-stars" src={asset('chicago-stars')} alt="" width="94" height="17" />

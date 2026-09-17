@@ -32,7 +32,28 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-
   container-type: inline-size;
 }
 .map-canvas { position: relative; width: 100%; aspect-ratio: 1; isolation: isolate; }
-.scene-background { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.scene-background { position: absolute; inset: 0; left: -100vw; overflow: hidden; pointer-events: none; }
+/* Keep the artwork aligned while continuing the street grid into the left gutter. */
+.scene-background > .map-layer { left: 100vw; }
+.scene-background > .artwork { margin-left: 100vw; }
+.scene-background::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 100vw;
+  --grid-step: calc(100cqw * 48 / 1254);
+  --grid-stroke: calc(100cqw * .7 / 1254);
+  --grid-offset: calc(100cqw * 28 / 1254);
+  --grid-stops:
+    rgba(142, 157, 164, .28) 0 var(--grid-stroke),
+    transparent 0 var(--grid-step),
+    rgba(142, 157, 164, .14) 0 calc(var(--grid-step) + var(--grid-stroke)),
+    transparent 0 calc(var(--grid-step) * 2),
+    rgba(142, 157, 164, .14) 0 calc(var(--grid-step) * 2 + var(--grid-stroke)),
+    transparent 0 calc(var(--grid-step) * 3),
+    rgba(142, 157, 164, .14) 0 calc(var(--grid-step) * 3 + var(--grid-stroke)),
+    transparent 0;
+  background-image: linear-gradient(to right, var(--grid-stops)), linear-gradient(to bottom, var(--grid-stops));
+  background-size: calc(var(--grid-step) * 4) calc(var(--grid-step) * 4);
+  background-position: right calc(-1 * var(--grid-offset)) top var(--grid-offset);
+}
 .lake-layer { position: absolute; inset: 0; pointer-events: none; }
 /* Continue the lake's edge color across the open water, without stretching the coastline. */
 .lake-layer::before, .lake-layer::after { content: ''; position: absolute; }
@@ -158,7 +179,7 @@ h1 span { position: absolute; white-space: nowrap; }
   width: max-content;
   white-space: nowrap;
   height: calc(100cqw * 22 / 1254);
-  font-size: calc(100cqw * 18 / 1254);
+  font-size: calc(100cqw * 20 / 1254);
   font-weight: 500;
   line-height: normal;
   text-align: left;
@@ -233,6 +254,7 @@ h1 span { position: absolute; white-space: nowrap; }
 .project-canvas, .projects-canvas { position: relative; isolation: isolate; }
 .project-canvas:focus { outline: none; }
 .project-scene { position: relative; height: calc(100cqw * 2460 / 1254); }
+.project-route { overflow: visible; }
 .project-content {
   position: absolute; left: calc(100cqw * 164 / 1254); top: calc(100cqw * 168 / 1254);
   width: calc(100cqw * 800 / 1254); display: flex; flex-direction: column;
