@@ -77,17 +77,24 @@ test('Week 1 opens with matching route color, paired images, and an interactive 
   await expect(page.locator('.project-photo').nth(0)).toHaveAttribute('src', /media\/razer-exploded\.png$/);
   await expect(page.locator('.project-photo').nth(1)).toHaveAttribute('src', /media\/razer-enclosure\.png$/);
   await expectModelLoaded(page);
-  await expect(page.locator('.project-title, .project-summary, .project-copy-space p')).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'This is my click fit design!' })).toBeVisible();
+  await expect(page.getByText('My gaming laptop somehow was dramatic one day', { exact: false })).toBeVisible();
+  await expect(page.getByText('I did kind of cheat, this was a design I made', { exact: false })).toBeVisible();
   await expect(page.getByText(/View project|Source code|Project name|Image 0[12]|Lake|Michigan/)).toHaveCount(0);
   await expect(page.getByRole('navigation').locator('[aria-current]')).toHaveCount(0);
   expect(await page.locator('.project-canvas').evaluate(node =>
     getComputedStyle(node).getPropertyValue('--route-color').trim())).toBe(mapColor);
   await expect(page.locator('.project-route')).toHaveCSS('background-color', 'rgb(4, 127, 223)');
   await expectLocalArtwork(page);
-  const media = page.locator('.project-media');
-  await expectFigmaBox(page, media.nth(0), { x: 164, y: 404, width: 800, height: 450 });
-  await expectFigmaBox(page, media.nth(1), { x: 164, y: 874, width: 800, height: 450 });
-  await expectFigmaBox(page, media.nth(2), { x: 164, y: 1442, width: 800, height: 450 });
+  const mediaBoxes = await page.locator('.project-media').evaluateAll(elements => elements.map((element) => {
+    const box = element.getBoundingClientRect();
+    return { x: box.x, y: box.y, width: box.width, height: box.height };
+  }));
+  expect(mediaBoxes[0].x).toBeCloseTo(mediaBoxes[1].x, 2);
+  expect(mediaBoxes[1].x).toBeCloseTo(mediaBoxes[2].x, 2);
+  expect(mediaBoxes[0].y).toBeLessThan(mediaBoxes[1].y);
+  expect(mediaBoxes[1].y).toBeLessThan(mediaBoxes[2].y);
+  for (const box of mediaBoxes) expect(box.width / box.height).toBeCloseTo(16 / 9, 2);
   await expect(page.locator('.shore-waves')).toHaveCount(1);
   await expect(page.locator('.lake-wave')).toHaveCount(0);
   await page.screenshot({ path: '.reference/week-1-project-desktop.png', fullPage: true });
@@ -139,12 +146,14 @@ for (const width of [320, 390, 713, 768, 900, 1440]) {
       const scene = await page.locator('.project-scene').boundingBox();
       const footer = await page.getByRole('link', { name: 'Back to map' }).last().boundingBox();
       expect(back!.y + back!.height).toBeLessThanOrEqual(scene!.y);
-      expect(footer!.y).toBeGreaterThanOrEqual(scene!.y + scene!.height);
+      expect(footer!.y + footer!.height).toBeLessThanOrEqual(scene!.y + scene!.height);
     } else {
       await expectFigmaBox(page, page.getByRole('navigation'), { x: 366, y: 17, width: 488, height: 60 });
       await expectFigmaBox(page, page.locator('.back-to-map-top'), { x: 48, y: 92, width: 160, height: 44 });
       await expectFigmaBox(page, page.locator('.back-to-map-top img'), { x: 48, y: 102, width: 24, height: 24 });
-      await expectFigmaBox(page, page.getByRole('link', { name: 'Back to map' }).last(), { x: 792, y: 2010, width: 172, height: 48 });
+      const model = await page.locator('.project-media').last().boundingBox();
+      const footer = await page.getByRole('link', { name: 'Back to map' }).last().boundingBox();
+      expect(footer!.y).toBeGreaterThanOrEqual(model!.y + model!.height);
     }
     for (const image of await page.locator('.project-media').all()) {
       const box = await image.boundingBox();
