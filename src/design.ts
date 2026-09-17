@@ -63,7 +63,7 @@ export const panelContent: Record<InformationPage, { heading: string; paragraphs
   Contact: {
     heading: 'Contact',
     paragraphs: [
-      'Contact me however! Ill respond faster on instagram tho!',
+      'Contact me however! Ill respond faster on instagram though',
       'Email: walshleo427@gmail.com',
       'Instagram: l_.walsh',
     ],
