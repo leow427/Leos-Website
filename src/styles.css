@@ -198,7 +198,9 @@ h1 span { position: absolute; white-space: nowrap; }
 .close-button { min-height: 44px; padding: 10px 15px; border: 1px solid #dde4e7; border-radius: 24px; background: #fff; color: #24313c; font-size: 14px; }
 .panel-stars { display: block; width: 94px; height: 17px; margin-bottom: 18px; }
 .information-panel h2 { margin: 0; max-width: 340px; font-size: clamp(28px, 6vw, 36px); line-height: 1.15; letter-spacing: -1px; }
-.information-panel p { margin: 18px 0 30px; color: #52636d; font-size: 16px; line-height: 1.6; }
+.panel-description { margin: 18px 0 30px; }
+.panel-description p { margin: 0; color: #52636d; font-size: 16px; line-height: 1.6; }
+.panel-description p + p { margin-top: 8px; }
 .return-button { min-height: 44px; border: 0; border-radius: 24px; padding: 12px 20px; background: var(--blue); color: #fff; font-size: 14px; font-weight: 500; }
 .return-button:hover { background: #004bbb; }
 .close-button:hover { background: #eaf2ff; }

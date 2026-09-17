@@ -33,7 +33,7 @@ test('the map shows only Week 1, restored waves, and no lake label', async ({ pa
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
   await page.evaluate(() => document.fonts.ready);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Leo’s Portfolio');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Leo’s Projects');
   await expect(page.getByRole('button', { name: /Line project/ })).toHaveCount(1);
   await expect(page.getByRole('button', { name: weekOne })).toBeVisible();
   await expect(page.locator('.station-label')).toHaveText('Week 1');
@@ -48,18 +48,19 @@ test('the map shows only Week 1, restored waves, and no lake label', async ({ pa
   expect(errors).toEqual([]);
 });
 
-test('About and Contact dialogs close with Escape and restore focus', async ({ page }) => {
+test('Contact dialog closes with Escape and restores focus', async ({ page }) => {
   await page.goto('/');
-  for (const name of ['About', 'Contact']) {
-    const button = page.getByRole('navigation').getByRole('button', { name });
-    await button.focus();
-    await page.keyboard.press('Enter');
-    await expect(page.getByRole('dialog')).toBeVisible();
-    await expect(page.getByRole('dialog')).toContainText('coming soon');
-    await page.keyboard.press('Escape');
-    await expect(page.getByRole('dialog')).not.toBeVisible();
-    await expect(button).toBeFocused();
-  }
+  await expect(page.getByRole('navigation').getByRole('button', { name: 'About' })).toHaveCount(0);
+  const button = page.getByRole('navigation').getByRole('button', { name: 'Contact' });
+  await button.focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('dialog')).toContainText('Contact me however! Ill respond faster on instagram tho!');
+  await expect(page.getByRole('dialog')).toContainText('Email: walshleo427@gmail.com');
+  await expect(page.getByRole('dialog')).toContainText('Instagram: l_.walsh');
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('dialog')).not.toBeVisible();
+  await expect(button).toBeFocused();
 });
 
 test('Week 1 opens with matching route color, paired images, and an interactive model', async ({ page }) => {

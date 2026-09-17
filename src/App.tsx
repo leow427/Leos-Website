@@ -50,10 +50,9 @@ function MiniTrains() {
 }
 
 const navigation = [
-  { name: 'Home', x: 10, width: 91, textX: 11, textWidth: 66 },
-  { name: 'About', x: 118, width: 94, textX: 14, textWidth: 66 },
-  { name: 'Projects', x: 232, width: 120, textX: 15.5, textWidth: 89 },
-  { name: 'Contact', x: 359, width: 116, textX: 17.5, textWidth: 87 },
+  { name: 'Home', x: 10, width: 145, textX: 0, textWidth: 145 },
+  { name: 'Projects', x: 170, width: 148, textX: 0, textWidth: 148 },
+  { name: 'Contact', x: 333, width: 145, textX: 0, textWidth: 145 },
 ] as const;
 
 type NavigationName = typeof navigation[number]['name'];
@@ -108,8 +107,8 @@ function Navigation({ active, onNavigate }: { active: NavigationName | null; onN
           className={`nav-item ${active === name ? 'is-active' : ''} ${highlighted === name ? 'is-highlighted' : ''}`}
           style={{ left: unit(x - 1), width: unit(width) }}
           aria-current={active === name ? 'page' : undefined}
-          aria-haspopup={name === 'About' || name === 'Contact' ? 'dialog' : undefined}
-          aria-controls={name === 'About' || name === 'Contact' ? 'information-panel' : undefined}
+          aria-haspopup={name === 'Contact' ? 'dialog' : undefined}
+          aria-controls={name === 'Contact' ? 'information-panel' : undefined}
           onPointerEnter={(event) => { if (event.pointerType === 'mouse' || event.pointerType === 'pen') { setHovered(name); setFocused(null); } }}
           onPointerDown={() => setPressed(true)}
           onFocus={(event) => { if (event.currentTarget.matches(':focus-visible')) { setFocused(name); setHovered(null); } }}
@@ -166,8 +165,8 @@ function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
       <RouteExtension x={844} y={1160} direction="south" color={routeColors.Red} />
       <Artwork name="transit-lines" x={53} y={104} width={975} height={1056} />
       <h1 id="portfolio-title">
-        <span className="hero-name" style={place(51, 413, 274, 132)}>Leo’s</span>{' '}
-        <span className="hero-portfolio" style={place(52, 529, 447, 128)}>Portfolio</span>
+        <span className="hero-name" style={place(51, 470, 274, 132)}>Leo’s</span>{' '}
+        <span className="hero-portfolio" style={place(52, 580, 447, 128)}>Projects</span>
       </h1>
       {projects.map((project) => {
         const { id, label, line, x, y, labelX, labelY } = project;
@@ -279,7 +278,7 @@ function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) 
 
 function ComingSoonPanel({ page, onClose }: { page: InformationPage | null; onClose: () => void }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const content = panelContent[page ?? 'About'];
+  const content = panelContent[page ?? 'Contact'];
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -298,12 +297,14 @@ function ComingSoonPanel({ page, onClose }: { page: InformationPage | null; onCl
       onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}>
       <div className="panel-inner">
         <div className="panel-topline">
-          <span className="panel-section">{page ?? 'About'}</span>
+          <span className="panel-section">{page ?? 'Contact'}</span>
           <button type="button" className="close-button" onClick={onClose} aria-label="Close panel">Close</button>
         </div>
         <img className="panel-stars" src={asset('chicago-stars')} alt="" width="94" height="17" />
         <h2 id="panel-title">{content.heading}</h2>
-        <p id="panel-description">{content.description}</p>
+        <div id="panel-description" className="panel-description">
+          {content.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </div>
         <button type="button" className="return-button" onClick={onClose}>Back to the map</button>
       </div>
     </dialog>
@@ -331,8 +332,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    document.title = view.kind === 'project' ? `${view.project.label} — Leo’s Portfolio`
-      : view.kind === 'projects' ? 'Projects — Leo’s Portfolio' : 'Leo’s Portfolio';
+    document.title = view.kind === 'project' ? `${view.project.label} — Leo’s Website`
+      : view.kind === 'projects' ? 'Projects — Leo’s Website' : 'Leo’s Website';
     window.scrollTo({ top: 0, behavior: 'instant' });
     if (view.kind === 'project') {
       lastProject.current = view.project.id;
@@ -350,7 +351,7 @@ export default function App() {
 
   const openProject = (project: Project) => { window.location.hash = `/projects/${project.id}`; };
   const navigate = (page: PageName | null) => {
-    if (page === 'About' || page === 'Contact') { setActivePanel(page); return; }
+    if (page === 'Contact') { setActivePanel(page); return; }
     setActivePanel(null);
     window.location.hash = page === 'Projects' ? '/projects' : '/';
   };

@@ -57,9 +57,15 @@ export const projects: Project[] = [
     ] },
 ];
 
-export type PageName = 'About' | 'Projects' | 'Contact';
+export type PageName = 'Projects' | 'Contact';
 export type InformationPage = Exclude<PageName, 'Projects'>;
-export const panelContent: Record<InformationPage, { heading: string; description: string }> = {
-  About: { heading: 'A little more about Leo.', description: 'This stop is coming soon.' },
-  Contact: { heading: 'Let’s connect.', description: 'Contact details are coming soon.' },
+export const panelContent: Record<InformationPage, { heading: string; paragraphs: string[] }> = {
+  Contact: {
+    heading: 'Contact',
+    paragraphs: [
+      'Contact me however! Ill respond faster on instagram tho!',
+      'Email: walshleo427@gmail.com',
+      'Instagram: l_.walsh',
+    ],
+  },
 };
