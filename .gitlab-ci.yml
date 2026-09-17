@@ -1,0 +1,15 @@
+image: node:22-bookworm-slim
+
+pages:
+  stage: deploy
+  script:
+    - npm ci --no-audit --no-fund
+    - npm run build
+    # Vite includes the source public/ assets in dist/ during the build.
+    # GitLab Pages needs the finished site, including index.html, in public/.
+    - cp -a dist/. public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
