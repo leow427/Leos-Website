@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { asset, mediaAsset, panelContent, place, projects, routeColors, unit } from './design';
-import type { InformationPage, PageName, Project } from './design';
+import type { InformationPage, PageName, Project, ProjectImage, ProjectMedia } from './design';
 import ModelViewer from './ModelViewer';
 
 function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = '' }: {
@@ -10,8 +10,7 @@ function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = 
   return <img className={`artwork ${className}`} src={asset(name)} alt="" draggable="false" style={place(x, y, width, height)} />;
 }
 
-function Lake({ project = false }: { project?: boolean }) {
-  const height = project ? 2460 : 1136;
+function Lake({ project = false, height = project ? 2460 : 1136 }: { project?: boolean; height?: number }) {
   const stretch = height / 1136;
   return <div className="lake-layer" aria-hidden="true" style={{ '--lake-height': unit(height) } as CSSProperties}>
     <Artwork name={project ? 'project-lake' : 'lake-michigan'} x={1014} width={240} height={height} />
@@ -144,7 +143,8 @@ function RouteExtension({ x, y, direction, color, width = 26 }: {
   } as CSSProperties} />;
 }
 
-function ProjectRoute() {
+function ProjectRoute({ height = 2460 }: { height?: number }) {
+  const routeHeight = height - 170;
   const routeRef = useRef<SVGSVGElement>(null);
   const [extension, setExtension] = useState(1254);
 
@@ -167,8 +167,8 @@ function ProjectRoute() {
 
   // Draw the bends and viewport extensions together to avoid subpixel seams.
   return <svg ref={routeRef} className="artwork project-route" aria-hidden="true" focusable="false"
-    viewBox="0 0 954 2290" preserveAspectRatio="none" fill="none" style={place(10, 136, 954, 2290)}>
-    <path d={`M${-extension} 8H38C70 8 86 24 86 56V2234C86 2266 102 2282 134 2282H${954 + extension}`}
+    viewBox={`0 0 954 ${routeHeight}`} preserveAspectRatio="none" fill="none" style={place(10, 136, 954, routeHeight)}>
+    <path d={`M${-extension} 8H38C70 8 86 24 86 56V${routeHeight - 56}C86 ${routeHeight - 24} 102 ${routeHeight - 8} 134 ${routeHeight - 8}H${954 + extension}`}
       stroke="var(--route-color)" strokeWidth="16" />
   </svg>;
 }
@@ -227,44 +227,84 @@ function BackToMap({ className = '' }: { className?: string }) {
   </a>;
 }
 
+function ProjectPhoto({ image, drawing = false }: { image: ProjectImage; drawing?: boolean }) {
+  const photo = <img className="project-photo" src={mediaAsset(image.file)} alt={image.alt}
+    width={image.width ?? 3024} height={image.height ?? 1701} />;
+  return <figure className={`project-figure ${drawing ? 'project-drawing' : ''}`}>
+    {image.title
+      ? <a className="project-media media-enlarge" href={mediaAsset(image.file)} target="_blank" rel="noreferrer"
+        aria-label={`View ${image.title} at full size`}>{photo}</a>
+      : <div className="project-media">{photo}</div>}
+  </figure>;
+}
+
+function MediaContent({ media, reflection }: { media: ProjectMedia; reflection?: string }) {
+  if (media.kind === 'image') return <>
+    <ProjectPhoto image={media.image} />
+    {media.caption && <p className="project-reflection">{media.caption}</p>}
+  </>;
+  if (media.kind === 'image-pair') return <>
+    <div className={`project-image-pair ${media.drawings ? 'project-drawings' : ''}`}>
+      {media.images.map(image => <ProjectPhoto key={image.file} image={image} drawing={media.drawings} />)}
+    </div>
+    {reflection && <p className="project-reflection">{reflection}</p>}
+  </>;
+  return <div className="project-media project-media-model">
+    <ModelViewer key={media.file} src={mediaAsset(media.file)} alt={media.alt}
+      orientation={media.orientation} cameraOrbit={media.cameraOrbit} />
+  </div>;
+}
+
 function ProjectPage({ project }: { project: Project }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [sceneHeight, setSceneHeight] = useState(2460);
+
+  useLayoutEffect(() => {
+    const content = contentRef.current;
+    const scene = content?.closest('.project-scene');
+    if (!content || !scene) return;
+    // Continue the same route and lake artwork to the end of longer projects.
+    const measure = () => {
+      const width = scene.getBoundingClientRect().width;
+      if (width) setSceneHeight(Math.max(project.introduction?.heading ? 2460 : 0, Math.ceil(168 + content.getBoundingClientRect().height * 1254 / width + 200)));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(content);
+    observer.observe(scene);
+    return () => observer.disconnect();
+  }, [project.id, project.introduction]);
+
   return (
     <section className="project-canvas" aria-labelledby="project-title" tabIndex={-1}
-      style={{ '--route-color': routeColors[project.line] } as CSSProperties}>
+      style={{ '--route-color': routeColors[project.line], '--scene-height': unit(sceneHeight) } as CSSProperties}>
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">
         <div className="scene-background" aria-hidden="true">
-          <StreetGrid height={2460} />
+          <StreetGrid height={sceneHeight} />
         </div>
-        <Lake project />
-        <ProjectRoute />
-        <div className="project-content">
-          <header className="project-introduction">
+        <Lake project height={sceneHeight} />
+        <ProjectRoute height={sceneHeight} />
+        <div className="project-content" ref={contentRef}>
+          <header className={`project-introduction ${project.introduction?.heading ? '' : 'project-introduction-compact'}`}>
             <img src={asset('chicago-stars')} alt="" width="94" height="17" />
             <h1 id="project-title" className="visually-hidden">{project.label}</h1>
-            <h2 className="project-headline">{project.introduction.heading}</h2>
-            {project.introduction.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            {project.introduction && <>
+              {project.introduction.heading && <h2 className="project-headline">{project.introduction.heading}</h2>}
+              {project.introduction.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </>}
           </header>
           {project.media.map((media, index) => (
-            <section className="project-image-block" key={media.kind === 'model' ? media.file : media.images[0].file} aria-label={`Project media ${index + 1}`}>
-              {media.kind === 'image-pair'
-                ? <div className="project-image-pair">
-                  {media.images.map(({ file, alt }) => <div className="project-media" key={file}>
-                    <img className="project-photo" src={mediaAsset(file)} alt={alt} width="3024" height="1701" />
-                  </div>)}
-                </div>
-                : <div className="project-media project-media-model">
-                  <ModelViewer src={mediaAsset(media.file)} alt={media.alt} />
-                </div>}
-              {media.kind === 'image-pair' && <p className="project-reflection">{project.reflection}</p>}
+            <section className="project-image-block" key={`${project.id}-${index}`} aria-label={`Project media ${index + 1}`}>
+              <MediaContent media={media} reflection={project.reflection} />
             </section>
           ))}
           <footer className="project-footer"><BackToMap /></footer>
         </div>
         <RouteArtwork name="project-station-halo" x={70} y={219} width={52} height={52} />
         <Artwork name="station" x={72.25} y={223.25} width={47.5} height={47.5} />
-        <Artwork name="project-station-small" x={79.671875} y={1581.046875} width={32.65625} height={32.65625} />
-        <Artwork name="project-station-small" x={79.671875} y={2253.046875} width={32.65625} height={32.65625} />
+        <Artwork name="project-station-small" x={79.671875} y={project.introduction?.heading ? 1581.046875 : sceneHeight * 0.56} width={32.65625} height={32.65625} />
+        <Artwork name="project-station-small" x={79.671875} y={sceneHeight - 206.953125} width={32.65625} height={32.65625} />
         <span className="train project-train" style={place(90, 700, 12, 34)} aria-hidden="true" />
         {[706, 714, 722].map((y) => <span key={y} className="train-window project-train-window"
           style={place(94, y, 4, 4)} aria-hidden="true" />)}
@@ -285,13 +325,15 @@ function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) 
         <h1 id="projects-title" tabIndex={-1}>Projects</h1>
         <ul className="project-list">
           {projects.map((project) => {
-            const preview = project.media.find((media) => media.kind === 'image-pair');
+            const imageMedia = project.media.find(media => media.kind === 'image' || media.kind === 'image-pair');
+            const preview = imageMedia?.kind === 'image' ? imageMedia.image
+              : imageMedia?.kind === 'image-pair' ? imageMedia.images[1] : undefined;
             return <li key={project.id}>
               <button type="button" className="project-card" id={`project-card-${project.id}`}
                 style={{ '--route-color': routeColors[project.line] } as CSSProperties}
                 onClick={() => onProject(project)}>
                 <span className="project-card-preview" aria-hidden="true">
-                  {preview && <img src={mediaAsset(preview.images[1].file)} alt="" width="3024" height="1701" />}
+                  {preview && <img src={mediaAsset(preview.file)} alt="" width="3024" height="1701" />}
                 </span>
                 <span className="project-card-label">{project.label}</span>
                 <span className="project-card-line">{project.line} Line</span>
@@ -391,7 +433,7 @@ export default function App() {
       <main className="portfolio">
         <Navigation active={activeNavigation} onNavigate={navigate} />
         {view.kind === 'home' && <TransitMap onProject={openProject} />}
-        {view.kind === 'project' && <ProjectPage project={view.project} />}
+        {view.kind === 'project' && <ProjectPage key={view.project.id} project={view.project} />}
         {view.kind === 'projects' && <ProjectsPage onProject={openProject} />}
         <ComingSoonPanel page={activePanel} onClose={() => setActivePanel(null)} />
       </main>

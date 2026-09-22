@@ -24,7 +24,9 @@ declare module 'react' {
 
 const initialOrbit = '120deg 65deg 105%';
 
-export default function ModelViewer({ src, alt }: { src: string; alt: string }) {
+export default function ModelViewer({ src, alt, orientation = '0deg -90deg 0deg', cameraOrbit = initialOrbit }: {
+  src: string; alt: string; orientation?: string; cameraOrbit?: string;
+}) {
   const viewerRef = useRef<ModelViewerElement>(null);
   const [registered, setRegistered] = useState(false);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
@@ -58,7 +60,7 @@ export default function ModelViewer({ src, alt }: { src: string; alt: string }) 
   const resetView = () => {
     const viewer = viewerRef.current;
     if (!viewer) return;
-    viewer.cameraOrbit = initialOrbit;
+    viewer.cameraOrbit = cameraOrbit;
     viewer.cameraTarget = 'auto auto auto';
     viewer.fieldOfView = '30deg';
     viewer.jumpCameraToGoal();
@@ -72,8 +74,8 @@ export default function ModelViewer({ src, alt }: { src: string; alt: string }) 
 
   return <div className="model-viewer-shell" data-status={status} aria-busy={status === 'loading'}>
     {registered && <model-viewer key={attempt} ref={viewerRef} src={modelSource} alt={alt}
-      camera-controls camera-orbit={initialOrbit} touch-action="pan-y"
-      orientation="0deg -90deg 0deg" environment-image="legacy"
+      camera-controls camera-orbit={cameraOrbit} touch-action="pan-y"
+      orientation={orientation} environment-image="legacy"
       interaction-prompt="none" shadow-intensity="1" exposure="0.7" loading="eager">
       <span slot="progress-bar" hidden />
     </model-viewer>}
