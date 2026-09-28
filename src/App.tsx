@@ -181,13 +181,13 @@ function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
         <StreetGrid />
       </div>
       <Lake />
-      {/* Continue the exported routes at their original endpoints, beyond the centered map. */}
+      {/* Continue the routes at the SVG endpoints, beyond the centered map. */}
       <RouteExtension x={556} y={116} direction="north" color={routeColors.Brown} />
       <RouteExtension x={588} y={116} direction="north" color="#44268a" />
-      <RouteExtension x={955} y={1160} direction="south" color={routeColors.Orange} />
-      <RouteExtension x={330} y={389} direction="west" color={routeColors.Green} />
-      <RouteExtension x={926} y={1160} direction="south" color={routeColors.Green} />
-      <RouteExtension x={330} y={417} direction="west" color="#fc81ad" />
+      <RouteExtension x={951} y={1160} direction="south" color={routeColors.Orange} />
+      <RouteExtension x={330} y={398} direction="west" color={routeColors.Green} />
+      <RouteExtension x={919} y={1160} direction="south" color={routeColors.Green} />
+      <RouteExtension x={330} y={430} direction="west" color="#fc81ad" />
       <RouteExtension x={329} y={303} direction="northwest" color={routeColors.Blue} />
       <RouteExtension x={53} y={772} direction="west" color={routeColors.Blue} />
       <RouteExtension x={844} y={104} direction="north" color={routeColors.Red} />
