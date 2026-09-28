@@ -1,14 +1,15 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="975" height="1056" viewBox="0 0 975 1056" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Transit Lines" stroke-width="26" stroke-linejoin="round">
 <!-- Straight runs use a 32-unit pitch with a 6-unit gap. Compact, staggered
-     corner radii preserve the squared-off proportions of the CTA reference. -->
+     corner radii preserve the squared-off proportions of the CTA reference.
+     Top-right radii step down evenly: 112, 92, 72, 52, 32. -->
 <path id="Brown Loop" d="M615 198H850A112 112 0 0 1 962 310V684A112 112 0 0 1 850 796H615A112 112 0 0 1 503 684V310A112 112 0 0 1 615 198Z" stroke="#854F0F"/>
 <path id="Brown North Tail" d="M503 12V310" stroke="#854F0F"/>
-<path id="Purple Loop" d="M623 230H842A88 88 0 0 1 930 318V676A88 88 0 0 1 842 764H623A88 88 0 0 1 535 676V318A88 88 0 0 1 623 230Z" stroke="#44268A"/>
+<path id="Purple Loop" d="M623 230H838A92 92 0 0 1 930 322V676A88 88 0 0 1 842 764H623A88 88 0 0 1 535 676V318A88 88 0 0 1 623 230Z" stroke="#44268A"/>
 <path id="Purple North Tail" d="M535 12V318" stroke="#44268A"/>
-<path id="Orange Loop" d="M631 262H834A64 64 0 0 1 898 326V668A64 64 0 0 1 834 732H631A64 64 0 0 1 567 668V326A64 64 0 0 1 631 262Z" stroke="#FD821A"/>
-<path id="Orange South Tail" d="M898 326V1056" stroke="#FD821A"/>
-<path id="Green Line" d="M277 294H818A48 48 0 0 1 866 342V1056" stroke="#028A4C"/>
+<path id="Orange Loop" d="M631 262H826A72 72 0 0 1 898 334V668A64 64 0 0 1 834 732H631A64 64 0 0 1 567 668V326A64 64 0 0 1 631 262Z" stroke="#FD821A"/>
+<path id="Orange South Tail" d="M898 334V1056" stroke="#FD821A"/>
+<path id="Green Line" d="M277 294H814A52 52 0 0 1 866 346V1056" stroke="#028A4C"/>
 <path id="Pink Loop" d="M631 326H802A32 32 0 0 1 834 358V668A32 32 0 0 1 802 700H631A32 32 0 0 1 599 668V358A32 32 0 0 1 631 326Z" stroke="#FC81AD"/>
 <path id="Pink West Tail" d="M277 326H631" stroke="#FC81AD"/>
 <path id="Blue Line" d="M276 199L458.1875 358H711A28 28 0 0 1 739 386V640A28 28 0 0 1 711 668H0" stroke="#047FDF"/>
