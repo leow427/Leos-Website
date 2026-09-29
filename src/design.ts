@@ -10,14 +10,15 @@ export const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name
 export const mediaAsset = (name: string) => `${import.meta.env.BASE_URL}media/${name}`;
 
 export const routeColors = {
-  Brown: '#854f0f', Red: '#d00b29', Blue: '#047fdf', Green: '#028a4c', Orange: '#fd821a',
+  Purple: '#44268a', Brown: '#854f0f', Red: '#d00b29', Blue: '#047fdf', Green: '#028a4c', Orange: '#fd821a',
 } as const;
 
 export type ProjectImage = { file: string; alt: string; title?: string; width?: number; height?: number };
 
 export type ProjectMedia =
+  | { kind: 'collage'; images: ProjectImage[] }
   | { kind: 'image-pair'; images: [ProjectImage, ProjectImage]; drawings?: boolean }
-  | { kind: 'image'; image: ProjectImage; caption?: string }
+  | { kind: 'image'; image: ProjectImage; caption?: string; captionPosition?: 'before' | 'after' }
   | { kind: 'model'; file: string; alt: string; orientation?: string; cameraOrbit?: string };
 
 export type Project = {
@@ -39,6 +40,7 @@ export type Project = {
 // Only published stops appear on the map and in the project index.
 // Each project's line supplies the map, detail-page, and train accent color.
 export const projects: Project[] = [
+
   { id: 'week-1', label: 'Week 1', line: 'Blue', x: 178.1428527832031, y: 169.8519287109375,
     labelX: 215.25, labelY: 141,
     introduction: {
@@ -73,6 +75,21 @@ export const projects: Project[] = [
       ] },
       { kind: 'model', file: 'week-2/tracker.glb', alt: 'Interactive 3D model of the Chicago transit tracker enclosure',
         orientation: '0deg 0deg 0deg', cameraOrbit: '25deg 70deg 105%' },
+    ] },
+  { id: 'week-3', label: 'Week 3', line: 'Purple', x: 572, y: 249.8519287109375,
+    labelX: 622, labelY: 243,
+    introduction: { paragraphs: ['I wanted to make a little magsafe phone charging stands for my iPhone. Apple has a feature where the phone acts like a clock and notification hub when magsafe is charging and the phone is horizontal. When I play video games I tend to lose track of time and miss important notifications. So now I can just set it down on the charger, and when I need it again, I can just go ahead and grab it.'] },
+    media: [
+      { kind: 'collage', images: [
+        { file: 'week-3/finished-stand.jpeg', title: 'Finished charging stand', alt: 'Finished wooden charging stand on a desk', width: 1368, height: 1824 },
+        { file: 'week-3/laser-cutting.jpeg', title: 'Laser-cut parts', alt: 'Wooden finger-jointed parts in the laser cutter', width: 1368, height: 1824 },
+        { file: 'week-3/assembled-parts.jpeg', title: 'Assembled wooden parts', alt: 'Two assembled wooden wedge enclosures on a workbench', width: 1368, height: 1824 },
+        { file: 'week-3/fit-gauge.jpeg', title: 'Fit gauge', alt: 'Laser-cut slot gauge held in a hand', width: 1368, height: 1824 },
+        { file: 'week-3/material-fit.jpeg', title: 'Material fit test', alt: 'Testing cardboard thickness with a slot gauge', width: 1368, height: 1824 },
+        { file: 'week-3/fusion-layout.png', title: 'Fusion cutting layout', alt: 'Fusion design showing the flat finger-jointed enclosure parts', width: 2374, height: 1242 },
+      ] },
+      { kind: 'image', caption: 'This was just a logo of yamaha that I liked, and I just added the text to the design and did a heat press of it.', captionPosition: 'before', image: { file: 'week-3/yamaha.jpeg', title: 'Yamaha design',
+        alt: 'Red Yamaha logo and lettering on dark fabric', width: 1824, height: 1368 } },
     ] },
 ];
 

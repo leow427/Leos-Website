@@ -392,3 +392,19 @@ model-viewer { --progress-bar-color: var(--route-color); --poster-color: transpa
   .information-panel[open] { animation: arrive .18s ease-out; }
   @keyframes arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 }
+
+.project-collage { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: clamp(8px, calc(100cqw * 14 / 1254), 14px); align-items: start; }
+.project-collage .project-figure { grid-column: span 2; }
+.project-collage .project-figure:nth-child(4), .project-collage .project-figure:nth-child(5) { grid-column: span 3; }
+.project-collage .project-media { aspect-ratio: 3 / 4; }
+.project-collage .project-photo { object-fit: cover; }
+.project-collage .project-figure:first-child { grid-column: span 4; grid-row: span 2; }
+.project-collage .project-figure:last-child { grid-column: 1 / -1; }
+.project-collage .project-figure:last-child .project-media { aspect-ratio: 2374 / 1242; }
+.week-three .project-image-block:last-of-type .project-media { aspect-ratio: 4 / 3; }
+@media (max-width: 600px) {
+  .project-collage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-collage .project-figure, .project-collage .project-figure:nth-child(4), .project-collage .project-figure:nth-child(5) { grid-column: span 1; }
+  .project-collage .project-figure:first-child, .project-collage .project-figure:last-child { grid-column: span 2; grid-row: auto; }
+  .project-collage .project-figure:first-child .project-media { aspect-ratio: 3 / 4; }
+}

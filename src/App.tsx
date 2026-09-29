@@ -183,7 +183,7 @@ function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
       <Lake />
       {/* Continue the routes at the SVG endpoints, beyond the centered map. */}
       <RouteExtension x={556} y={116} direction="north" color={routeColors.Brown} />
-      <RouteExtension x={588} y={116} direction="north" color="#44268a" />
+      <RouteExtension x={588} y={116} direction="north" color={routeColors.Purple} />
       <RouteExtension x={951} y={1160} direction="south" color={routeColors.Orange} />
       <RouteExtension x={330} y={398} direction="west" color={routeColors.Green} />
       <RouteExtension x={919} y={1160} direction="south" color={routeColors.Green} />
@@ -239,9 +239,13 @@ function ProjectPhoto({ image, drawing = false }: { image: ProjectImage; drawing
 }
 
 function MediaContent({ media, reflection }: { media: ProjectMedia; reflection?: string }) {
+  if (media.kind === 'collage') return <div className="project-collage">
+    {media.images.map(image => <ProjectPhoto key={image.file} image={image} />)}
+  </div>;
   if (media.kind === 'image') return <>
+    {media.caption && media.captionPosition === 'before' && <p className="project-reflection">{media.caption}</p>}
     <ProjectPhoto image={media.image} />
-    {media.caption && <p className="project-reflection">{media.caption}</p>}
+    {media.caption && media.captionPosition !== 'before' && <p className="project-reflection">{media.caption}</p>}
   </>;
   if (media.kind === 'image-pair') return <>
     <div className={`project-image-pair ${media.drawings ? 'project-drawings' : ''}`}>
@@ -276,7 +280,7 @@ function ProjectPage({ project }: { project: Project }) {
   }, [project.id, project.introduction]);
 
   return (
-    <section className="project-canvas" aria-labelledby="project-title" tabIndex={-1}
+    <section className={`project-canvas ${project.id === 'week-3' ? 'week-three' : ''}`} aria-labelledby="project-title" tabIndex={-1}
       style={{ '--route-color': routeColors[project.line], '--scene-height': unit(sceneHeight) } as CSSProperties}>
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">
@@ -325,9 +329,10 @@ function ProjectsPage({ onProject }: { onProject: (project: Project) => void }) 
         <h1 id="projects-title" tabIndex={-1}>Projects</h1>
         <ul className="project-list">
           {projects.map((project) => {
-            const imageMedia = project.media.find(media => media.kind === 'image' || media.kind === 'image-pair');
+            const imageMedia = project.media.find(media => media.kind === 'image' || media.kind === 'image-pair' || media.kind === 'collage');
             const preview = imageMedia?.kind === 'image' ? imageMedia.image
-              : imageMedia?.kind === 'image-pair' ? imageMedia.images[1] : undefined;
+              : imageMedia?.kind === 'image-pair' ? imageMedia.images[1]
+              : imageMedia?.kind === 'collage' ? imageMedia.images[0] : undefined;
             return <li key={project.id}>
               <button type="button" className="project-card" id={`project-card-${project.id}`}
                 style={{ '--route-color': routeColors[project.line] } as CSSProperties}
