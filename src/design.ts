@@ -105,6 +105,10 @@ export const projects: Project[] = [
         { file: 'week-4/milled-pcb.jpeg', title: 'Freshly milled PCB', alt: 'Finished circuit traces and board outline on the milling bed', width: 1368, height: 1824 },
         { file: 'week-4/pcb-design.png', title: 'PCB design', alt: 'PCB editor showing the Arduino Nano footprint, LED, resistor, and copper traces', width: 1982, height: 1248 },
       ] },
+      { kind: 'image', image: {
+        file: 'week-4/pcb-schematic.png', title: 'PCB circuit schematic',
+        alt: 'Circuit schematic connecting Arduino Nano pin D4 through a resistor and LED to ground', width: 1420, height: 1036,
+      } },
     ] },
 ];
 
