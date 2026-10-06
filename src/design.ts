@@ -16,6 +16,7 @@ export const routeColors = {
 export type ProjectImage = { file: string; alt: string; title?: string; width?: number; height?: number };
 
 export type ProjectMedia =
+  | { kind: 'video'; file: string; alt: string; width: number; height: number }
   | { kind: 'collage'; images: ProjectImage[] }
   | { kind: 'image-pair'; images: [ProjectImage, ProjectImage]; drawings?: boolean }
   | { kind: 'image'; image: ProjectImage; caption?: string; captionPosition?: 'before' | 'after' }
@@ -95,6 +96,7 @@ export const projects: Project[] = [
     labelX: 876, labelY: 141,
     introduction: { paragraphs: ['My PCB worked! It was tough and I have some issues with one short, but my light blinked at the end.'] },
     media: [
+      { kind: 'video', file: 'week-4/pcb-blinking.mp4', alt: 'Week 4 PCB blinking light demonstration', width: 720, height: 1280 },
       { kind: 'collage', images: [
         { file: 'week-4/assembled-pcb.jpeg', title: 'Assembled PCB', alt: 'Arduino Nano mounted on the finished circuit board', width: 1368, height: 1824 },
         { file: 'week-4/soldered-pcb.jpeg', title: 'Soldered PCB', alt: 'Copper side of the PCB with soldered components and curved smile detail', width: 1368, height: 1824 },

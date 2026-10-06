@@ -239,6 +239,12 @@ function ProjectPhoto({ image, drawing = false }: { image: ProjectImage; drawing
 }
 
 function MediaContent({ media, reflection }: { media: ProjectMedia; reflection?: string }) {
+  if (media.kind === 'video') return <video className="project-media project-video"
+    controls autoPlay muted loop playsInline preload="metadata" aria-label={media.alt}
+    width={media.width} height={media.height} style={{ aspectRatio: `${media.width} / ${media.height}` }}>
+    <source src={mediaAsset(media.file)} type="video/mp4" />
+    <a href={mediaAsset(media.file)}>Download the project video</a>
+  </video>;
   if (media.kind === 'collage') return <div className="project-collage">
     {media.images.map(image => <ProjectPhoto key={image.file} image={image} />)}
   </div>;
