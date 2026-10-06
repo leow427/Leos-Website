@@ -35,9 +35,9 @@ test('the map shows all weekly stops, restored waves, and no lake label', async 
   await page.goto('/');
   await page.evaluate(() => document.fonts.ready);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Leo’s Projects');
-  await expect(page.getByRole('button', { name: /Line project/ })).toHaveCount(3);
+  await expect(page.getByRole('button', { name: /Line project/ })).toHaveCount(4);
   await expect(page.getByRole('button', { name: weekOne })).toBeVisible();
-  await expect(page.locator('.station-label')).toHaveText(['Week 1', 'Week 2', 'Week 3']);
+  await expect(page.locator('.station-label')).toHaveText(['Week 1', 'Week 2', 'Week 3', 'Week 4']);
   await expect(page.getByText('TBD', { exact: true })).toHaveCount(0);
   await expect(page.getByText(/Lake|Michigan/)).toHaveCount(0);
   await expect(page.locator('.shore-waves')).toHaveCount(1);
@@ -112,7 +112,7 @@ test('Projects lists the available projects separately and supports browser hist
   await expect(page).toHaveURL(/#\/projects$/);
   await expect(page.getByRole('heading', { name: 'Projects' })).toBeVisible();
   await expect(page.getByRole('navigation').getByRole('button', { name: 'Projects' })).toHaveAttribute('aria-current', 'page');
-  await expect(page.locator('.project-card')).toHaveCount(3);
+  await expect(page.locator('.project-card')).toHaveCount(4);
   await page.getByRole('button', { name: 'Week 1 Blue Line' }).click();
   await expect(page.locator('.project-canvas')).toBeVisible();
   await page.reload();

@@ -280,7 +280,7 @@ function ProjectPage({ project }: { project: Project }) {
   }, [project.id, project.introduction]);
 
   return (
-    <section className={`project-canvas ${project.id === 'week-3' ? 'week-three' : ''}`} aria-labelledby="project-title" tabIndex={-1}
+    <section className={`project-canvas ${project.id === 'week-3' ? 'week-three' : project.id === 'week-4' ? 'week-four' : ''}`} aria-labelledby="project-title" tabIndex={-1}
       style={{ '--route-color': routeColors[project.line], '--scene-height': unit(sceneHeight) } as CSSProperties}>
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">

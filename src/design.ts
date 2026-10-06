@@ -91,6 +91,19 @@ export const projects: Project[] = [
       { kind: 'image', caption: 'This was just a logo of yamaha that I liked, and I just added the text to the design and did a heat press of it.', captionPosition: 'before', image: { file: 'week-3/yamaha.jpeg', title: 'Yamaha design',
         alt: 'Red Yamaha logo and lettering on dark fabric', width: 1824, height: 1368 } },
     ] },
+  { id: 'week-4', label: 'Week 4', line: 'Red', x: 828, y: 169.8519287109375,
+    labelX: 876, labelY: 141,
+    introduction: { paragraphs: ['My PCB worked! It was tough and I have some issues with one short, but my light blinked at the end.'] },
+    media: [
+      { kind: 'collage', images: [
+        { file: 'week-4/assembled-pcb.jpeg', title: 'Assembled PCB', alt: 'Arduino Nano mounted on the finished circuit board', width: 1368, height: 1824 },
+        { file: 'week-4/soldered-pcb.jpeg', title: 'Soldered PCB', alt: 'Copper side of the PCB with soldered components and curved smile detail', width: 1368, height: 1824 },
+        { file: 'week-4/pcb-and-nano.jpeg', title: 'PCB and Arduino Nano', alt: 'Milled circuit board beside an Arduino Nano on the workbench', width: 1368, height: 1824 },
+        { file: 'week-4/milling-pcb.jpeg', title: 'Milling the PCB', alt: 'CNC mill cutting the copper circuit board', width: 1368, height: 1824 },
+        { file: 'week-4/milled-pcb.jpeg', title: 'Freshly milled PCB', alt: 'Finished circuit traces and board outline on the milling bed', width: 1368, height: 1824 },
+        { file: 'week-4/pcb-design.png', title: 'PCB design', alt: 'PCB editor showing the Arduino Nano footprint, LED, resistor, and copper traces', width: 1982, height: 1248 },
+      ] },
+    ] },
 ];
 
 export type PageName = 'Projects' | 'Contact';

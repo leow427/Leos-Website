@@ -408,3 +408,5 @@ model-viewer { --progress-bar-color: var(--route-color); --poster-color: transpa
   .project-collage .project-figure:first-child, .project-collage .project-figure:last-child { grid-column: span 2; grid-row: auto; }
   .project-collage .project-figure:first-child .project-media { aspect-ratio: 3 / 4; }
 }
+
+.week-four .project-collage .project-figure:last-child .project-media { aspect-ratio: 2980 / 1876; }
