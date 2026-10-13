@@ -414,3 +414,17 @@ model-viewer { --progress-bar-color: var(--route-color); --poster-color: transpa
 .project-video { display: block; height: auto; max-height: 70svh; object-fit: contain; background: #101a23; }
 
 .week-four .project-image-block:last-of-type .project-media { aspect-ratio: 1420 / 1036; }
+
+/* Week 5 keeps the tall photos intact and groups the four base details evenly. */
+.week-five .project-image-pair .project-media { aspect-ratio: auto; }
+.week-five .project-image-pair .project-photo { height: auto; }
+.week-five .project-image-block > .project-figure { width: min(100%, 480px); align-self: center; }
+.week-five .project-image-block > .project-figure .project-media { aspect-ratio: 3 / 4; }
+.week-five .project-collage { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.week-five .project-collage .project-figure { grid-column: auto; grid-row: auto; }
+.week-five .project-collage .project-figure .project-media { aspect-ratio: 3 / 4; }
+.week-five .project-video { width: min(100%, 480px); align-self: center; }
+.week-five .project-reflection { max-width: 100%; }
+.project-reflection a { color: var(--blue); overflow-wrap: anywhere; text-underline-offset: 3px; }
+.obj-viewer-canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.week-five .project-media-model { aspect-ratio: 4 / 3; min-height: 280px; }

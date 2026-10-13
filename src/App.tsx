@@ -1,8 +1,9 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { asset, mediaAsset, panelContent, place, projects, routeColors, unit } from './design';
 import type { InformationPage, PageName, Project, ProjectImage, ProjectMedia } from './design';
 import ModelViewer from './ModelViewer';
+const ObjViewer = lazy(() => import('./ObjViewer'));
 
 function Artwork({ name, x = 0, y = 0, width = 1254, height = 1254, className = '' }: {
   name: string; x?: number; y?: number; width?: number; height?: number; className?: string;
@@ -239,8 +240,14 @@ function ProjectPhoto({ image, drawing = false }: { image: ProjectImage; drawing
 }
 
 function MediaContent({ media, reflection }: { media: ProjectMedia; reflection?: string }) {
+  if (media.kind === 'text') return <p className="project-reflection">{media.text}{media.link && <>{' '}<a href={media.link.href} target="_blank" rel="noreferrer">{media.link.label}</a></>}</p>;
+  if (media.kind === 'obj-model') return <div className="project-media project-media-model">
+    <Suspense fallback={<div className="model-status" role="status">Loading 3D viewer…</div>}>
+      <ObjViewer src={mediaAsset(media.file)} materialSrc={mediaAsset(media.material)} alt={media.alt} />
+    </Suspense>
+  </div>;
   if (media.kind === 'video') return <video className="project-media project-video"
-    controls autoPlay muted loop playsInline preload="metadata" aria-label={media.alt}
+    controls autoPlay={media.autoplay ?? true} muted loop playsInline preload="metadata" poster={media.poster ? mediaAsset(media.poster) : undefined} aria-label={media.alt}
     width={media.width} height={media.height} style={{ aspectRatio: `${media.width} / ${media.height}` }}>
     <source src={mediaAsset(media.file)} type="video/mp4" />
     <a href={mediaAsset(media.file)}>Download the project video</a>
@@ -286,7 +293,7 @@ function ProjectPage({ project }: { project: Project }) {
   }, [project.id, project.introduction]);
 
   return (
-    <section className={`project-canvas ${project.id === 'week-3' ? 'week-three' : project.id === 'week-4' ? 'week-four' : ''}`} aria-labelledby="project-title" tabIndex={-1}
+    <section className={`project-canvas ${project.id === 'week-3' ? 'week-three' : project.id === 'week-4' ? 'week-four' : project.id === 'week-5' ? 'week-five' : ''}`} aria-labelledby="project-title" tabIndex={-1}
       style={{ '--route-color': routeColors[project.line], '--scene-height': unit(sceneHeight) } as CSSProperties}>
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">

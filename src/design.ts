@@ -16,7 +16,9 @@ export const routeColors = {
 export type ProjectImage = { file: string; alt: string; title?: string; width?: number; height?: number };
 
 export type ProjectMedia =
-  | { kind: 'video'; file: string; alt: string; width: number; height: number }
+  | { kind: 'video'; file: string; alt: string; width: number; height: number; poster?: string; autoplay?: boolean }
+  | { kind: 'text'; text: string; link?: { href: string; label: string } }
+  | { kind: 'obj-model'; file: string; material: string; alt: string }
   | { kind: 'collage'; images: ProjectImage[] }
   | { kind: 'image-pair'; images: [ProjectImage, ProjectImage]; drawings?: boolean }
   | { kind: 'image'; image: ProjectImage; caption?: string; captionPosition?: 'before' | 'after' }
@@ -109,6 +111,31 @@ export const projects: Project[] = [
         file: 'week-4/pcb-schematic.png', title: 'PCB circuit schematic',
         alt: 'Circuit schematic connecting Arduino Nano pin D4 through a resistor and LED to ground', width: 1420, height: 1036,
       } },
+    ] },
+  { id: 'week-5', label: 'Week 5', line: 'Orange', x: 935, y: 544,
+    labelX: 1036, labelY: 548,
+    introduction: { paragraphs: ["This week was 3d printing and 3d scanning week. I decided to make my stepmom a 3d printed lamp for her birthday, that is based off an instagram reel that I saw. I was on my explore page and saw this really cool way to hide layer lines in a lamp using a woven texture, and thought it would be a good challenge to try and make it myself. I followed a bunch of youtube tutorials, which sadly took forever. The fabric texture is just a height map that you can place using the texture extrude tool. You just upload a grayscale height map of what you want and extrude accordingly. I wanted the lamp to feel organic so I made it warped, which is made by adding a square sketch and then making a construct sketch plane higher up and making another square, then using the loft feature, which is super useful and one of my favorite features."] },
+    media: [
+      { kind: 'image-pair', images: [
+        { file: 'week-5/fusion-base.jpeg', title: 'Fusion lamp base', alt: 'Fusion render of the woven lamp base with its threaded opening', width: 1800, height: 1157 },
+        { file: 'week-5/fusion-shade.jpeg', title: 'Fusion lampshade', alt: 'Fusion design of the warped lampshade with woven texture', width: 1800, height: 1036 },
+      ] },
+      { kind: 'text', text: "I also didnt want to constantly make changes to this one lamp since prototyping meant I had to make a million different copies, and I want others to reap the benefits of my findings. So I 75% vibe coded an app that is deployed on vercel(the goat as usual) where you can make your own lamp! I originally uploaded my 3d model and asked it to make a standard version, my twisted one, and a stacked one that you can easily modify each of the values with sliders, making prototyping so much easier. Here is da linkkkkk(there are still going to be updates for a bit and there are some small glitches):", link: { href: 'https://woven-lamp-studio.vercel.app', label: 'https://woven-lamp-studio.vercel.app' } },
+      { kind: 'image', caption: "I have to get better at documentation, since this was one of the only photos i took of the many prototypes. This lamp base was number 3", captionPosition: 'before', image: {
+        file: 'week-5/prototype-three.jpeg', title: 'Lamp prototype number 3', alt: 'White woven lampshade on the blue third prototype base', width: 1350, height: 1800,
+      } },
+      { kind: 'text', text: "This is where I am at right now, and I wanted to also experiment with a 3d printed PCB technique that I saw on youtube. It went shockingly well, even with soldering. Any issues that I had, were entirely mistakes on my part. The PCB clicks in and so does the usb-c module, though I plan to buy the PCB. The COB strip that I bought wraps around a core I designed and teh cables funnel through the bottom to connect to the PCB. The top is printing as you read this probably lol. It does take forever" },
+      { kind: 'collage', images: [
+        { file: 'week-5/copper-traces.jpeg', title: 'Printed PCB copper traces', alt: 'Copper traces on the printed PCB above the green lamp base', width: 1350, height: 1800 },
+        { file: 'week-5/installed-pcb.jpeg', title: 'PCB clipped into the base', alt: 'PCB and USB-C module clipped into the green lamp base', width: 1350, height: 1800 },
+        { file: 'week-5/lamp-core-parts.jpeg', title: 'Lamp core and base', alt: 'White spiral lamp core beside the green woven base', width: 1350, height: 1800 },
+        { file: 'week-5/assembled-core.jpeg', title: 'Assembled lamp core', alt: 'White spiral lamp core fitted into the green base', width: 1350, height: 1800 },
+      ] },
+      { kind: 'text', text: "Heres a look at my light controller too. I made a hand drawn animated remote using a waveshare display. This took me way too long to get working." },
+      { kind: 'image', image: { file: 'week-5/light-controller.jpeg', title: 'PCB and light test', alt: 'Handmade circuit board powering a bright LED strip on a soldering mat', width: 1350, height: 1800 } },
+      { kind: 'video', file: 'week-5/light-controller.mp4', poster: 'week-5/controller-poster.jpeg', autoplay: false, alt: 'Animated Waveshare light controller and LED demonstration', width: 720, height: 1280 },
+      { kind: 'text', text: 'And heres a 3D model of my motorcycle helmet' },
+      { kind: 'obj-model', file: 'week-5/helmet/10_12_2026.obj', material: 'week-5/helmet/10_12_2026.mtl', alt: 'Interactive 3D scan of my motorcycle helmet' },
     ] },
 ];
 
