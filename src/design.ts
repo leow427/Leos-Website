@@ -10,7 +10,7 @@ export const asset = (name: string) => `${import.meta.env.BASE_URL}assets/${name
 export const mediaAsset = (name: string) => `${import.meta.env.BASE_URL}media/${name}`;
 
 export const routeColors = {
-  Purple: '#44268a', Brown: '#854f0f', Red: '#d00b29', Blue: '#047fdf', Green: '#028a4c', Orange: '#fd821a',
+  Purple: '#44268a', Brown: '#854f0f', Red: '#d00b29', Blue: '#047fdf', Green: '#028a4c', Orange: '#fd821a', Pink: '#fc81ad',
 } as const;
 
 export type ProjectImage = { file: string; alt: string; title?: string; width?: number; height?: number };
@@ -136,6 +136,18 @@ export const projects: Project[] = [
       { kind: 'video', file: 'week-5/light-controller.mp4', poster: 'week-5/controller-poster.jpeg', autoplay: false, alt: 'Animated Waveshare light controller and LED demonstration', width: 720, height: 1280 },
       { kind: 'text', text: 'And heres a 3D model of my motorcycle helmet' },
       { kind: 'obj-model', file: 'week-5/helmet/10_12_2026.obj', material: 'week-5/helmet/10_12_2026.mtl', alt: 'Interactive 3D scan of my motorcycle helmet' },
+    ] },
+  { id: 'week-6', label: 'Week 6', line: 'Pink', x: 354, y: 414,
+    labelX: 334, labelY: 452,
+    introduction: { paragraphs: ["I have succumbed to the forge gods:(. Sadly at the very end of my third cut, some solder or something must've bridged ground and 5v, and fried my chip. This only happened after everything was plugged in since im triple checked continuity on every step."] },
+    media: [
+      { kind: 'collage', images: [
+        { file: 'week-6/milled-board.jpeg', title: 'Milled circuit board', alt: 'Freshly milled copper circuit board before soldering', width: 3024, height: 4032 },
+        { file: 'week-6/soldered-chip.jpeg', title: 'Soldered ATtiny', alt: 'ATtiny chip soldered onto the copper circuit board', width: 3024, height: 4032 },
+        { file: 'week-6/connected-board.jpeg', title: 'Connected circuit board', alt: 'Assembled circuit board with potentiometer connected to a USB UPDI programmer', width: 3024, height: 4032 },
+        { file: 'week-6/pcb-layout.png', title: 'PCB layout', alt: 'PCB layout showing the ATtiny, potentiometer, IR emitter connections, and power traces', width: 1528, height: 1268 },
+      ] },
+      { kind: 'text', text: "The idea was to get the attiny to control an IR emitter module, but since we ran out of buttons i was just going to use a potentiometer." },
     ] },
 ];
 

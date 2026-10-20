@@ -428,3 +428,13 @@ model-viewer { --progress-bar-color: var(--route-color); --poster-color: transpa
 .project-reflection a { color: var(--blue); overflow-wrap: anywhere; text-underline-offset: 3px; }
 .obj-viewer-canvas { display: block; width: 100%; height: 100%; touch-action: none; }
 .week-five .project-media-model { aspect-ratio: 4 / 3; min-height: 280px; }
+
+/* Keep every Week 6 photo and the circuit layout fully visible. */
+.week-six .project-collage { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.week-six .project-collage .project-figure { grid-column: auto; grid-row: auto; }
+.week-six .project-collage .project-figure:last-child { grid-column: 1 / -1; }
+.week-six .project-collage .project-figure:last-child .project-media { aspect-ratio: 1528 / 1268; }
+.week-six .project-collage .project-photo { object-fit: contain; }
+@media (max-width: 600px) {
+  .week-six .project-collage { grid-template-columns: 1fr; }
+}

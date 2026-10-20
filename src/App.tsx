@@ -188,7 +188,7 @@ function TransitMap({ onProject }: { onProject: (project: Project) => void }) {
       <RouteExtension x={951} y={1160} direction="south" color={routeColors.Orange} />
       <RouteExtension x={330} y={398} direction="west" color={routeColors.Green} />
       <RouteExtension x={919} y={1160} direction="south" color={routeColors.Green} />
-      <RouteExtension x={330} y={430} direction="west" color="#fc81ad" />
+      <RouteExtension x={330} y={430} direction="west" color={routeColors.Pink} />
       <RouteExtension x={329} y={303} direction="northwest" color={routeColors.Blue} />
       <RouteExtension x={53} y={772} direction="west" color={routeColors.Blue} />
       <RouteExtension x={844} y={104} direction="north" color={routeColors.Red} />
@@ -293,7 +293,7 @@ function ProjectPage({ project }: { project: Project }) {
   }, [project.id, project.introduction]);
 
   return (
-    <section className={`project-canvas ${project.id === 'week-3' ? 'week-three' : project.id === 'week-4' ? 'week-four' : project.id === 'week-5' ? 'week-five' : ''}`} aria-labelledby="project-title" tabIndex={-1}
+    <section className={`project-canvas ${project.id === 'week-3' ? 'week-three' : project.id === 'week-4' ? 'week-four' : project.id === 'week-5' ? 'week-five' : project.id === 'week-6' ? 'week-six' : ''}`} aria-labelledby="project-title" tabIndex={-1}
       style={{ '--route-color': routeColors[project.line], '--scene-height': unit(sceneHeight) } as CSSProperties}>
       <BackToMap className="back-to-map-top" />
       <div className="project-scene">
