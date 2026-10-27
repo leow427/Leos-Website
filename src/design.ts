@@ -149,6 +149,23 @@ export const projects: Project[] = [
       ] },
       { kind: 'text', text: "The idea was to get the attiny to control an IR emitter module, but since we ran out of buttons i was just going to use a potentiometer." },
     ] },
+  { id: 'week-7', label: 'Week 7', line: 'Blue', x: 364, y: 756,
+    labelX: 339, labelY: 812,
+    introduction: { paragraphs: [
+      'This week I wanted to try to better understand, and improve upon my implementation of a IR light protocol I made over the summer to be lower latency, easier to run, and used for a more general application.',
+      'My input this week was a TSOP IR sensor. I am receiver color codes out of an adafruit IR emitter, and the IR sensor then forwards those commands to an esp32, which then decodes them and presents the color to an rgb led.',
+      'I am taking the album cover art, taking the most vibrant 3 colors, and mapping them to high, low, and mid frequencies to display their colors based on their volume. The colors mix if you get a lot of volume from 2 or all 3 of the frequencies.',
+      'I also made a pcb for it, but it failed and I did not have time to cut a new one since i was also finishing my lamp and working on other projects!',
+    ] },
+    media: [
+      { kind: 'video', file: 'week-7/ir-demo.mp4', alt: 'IR receiver and RGB LED responding to music', width: 720, height: 1280 },
+      { kind: 'image', image: { file: 'week-7/ir-setup.jpeg', title: 'IR light setup', alt: 'IR emitter, ESP32, and RGB LED connected on breadboards beside a laptop playing music', width: 1800, height: 1350 } },
+      { kind: 'image-pair', images: [
+        { file: 'week-7/pcb-components.jpeg', title: 'IR receiver PCB components', alt: 'Component side of the IR receiver PCB with LEDs, sensor, capacitor, and microcontroller socket', width: 1350, height: 1800 },
+        { file: 'week-7/pcb-traces.jpeg', title: 'IR receiver PCB traces', alt: 'Copper traces and soldered connections on the IR RX v2 board', width: 1350, height: 1800 },
+      ] },
+      { kind: 'image', image: { file: 'week-7/pcb-layout.png', title: 'IR receiver PCB layout', alt: 'IR Receiver v2 PCB layout showing the XIAO ESP32C3, TSOP38438 sensor, and RGB LED connections', width: 1468, height: 946 } },
+    ] },
 ];
 
 export type PageName = 'Projects' | 'Contact';
