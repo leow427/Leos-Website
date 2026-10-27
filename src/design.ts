@@ -161,6 +161,12 @@ export const projects: Project[] = [
         { file: 'week-6/pcb-layout.png', title: 'PCB layout', alt: 'PCB layout showing the ATtiny, potentiometer, IR emitter connections, and power traces', width: 1528, height: 1268 },
       ] },
       { kind: 'text', text: "The idea was to get the attiny to control an IR emitter module, but since we ran out of buttons i was just going to use a potentiometer." },
+      { kind: 'text', text: "This is an update and re-attempt. I made 3 boards, swapped out 4 attiny's checked connections every time, used updi friend, and arduino, and spent countless hours. I was getting correct power, my continuity tests were good, but the attiny did not want to flash. I honestly have no idea went wrong." },
+      { kind: 'collage', images: [
+        { file: 'week-6/reattempt-updi.jpeg', title: 'UPDI Friend re-attempt', alt: 'Handmade ATtiny circuit board connected to a powered UPDI Friend programmer', width: 1350, height: 1800 },
+        { file: 'week-6/reattempt-workbench.jpeg', title: 'Programming re-attempt at the workbench', alt: 'ATtiny board and potentiometer connected beside a laptop, with a thumbs-down gesture', width: 1350, height: 1800 },
+        { file: 'week-6/reattempt-board.jpeg', title: 'Another ATtiny programming attempt', alt: 'ATtiny circuit board resting on a soldering fixture and connected to a UPDI Friend, with a thumbs-down gesture', width: 1350, height: 1800 },
+      ] },
     ] },
   { id: 'week-7', label: 'Week 7', line: 'Blue', x: 364, y: 756,
     labelX: 339, labelY: 812,

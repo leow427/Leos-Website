@@ -432,8 +432,9 @@ model-viewer { --progress-bar-color: var(--route-color); --poster-color: transpa
 /* Keep every Week 6 photo and the circuit layout fully visible. */
 .week-six .project-collage { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .week-six .project-collage .project-figure { grid-column: auto; grid-row: auto; }
-.week-six .project-collage .project-figure:last-child { grid-column: 1 / -1; }
-.week-six .project-collage .project-figure:last-child .project-media { aspect-ratio: 1528 / 1268; }
+.week-six .project-collage .project-figure .project-media { aspect-ratio: 3 / 4; }
+.week-six .project-collage .project-figure:nth-child(4):last-child { grid-column: 1 / -1; }
+.week-six .project-collage .project-figure:nth-child(4):last-child .project-media { aspect-ratio: 1528 / 1268; }
 .week-six .project-collage .project-photo { object-fit: contain; }
 @media (max-width: 600px) {
   .week-six .project-collage { grid-template-columns: 1fr; }
