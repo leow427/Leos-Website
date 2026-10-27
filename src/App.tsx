@@ -303,6 +303,13 @@ function ProjectPage({ project }: { project: Project }) {
         <Lake project height={sceneHeight} />
         <ProjectRoute height={sceneHeight} />
         <div className="project-content" ref={contentRef}>
+          {project.update && <section className="project-update" aria-labelledby="project-update-title">
+            <h2 id="project-update-title" className="project-update-badge">UPDATE</h2>
+            <p className="project-reflection">{project.update.text}</p>
+            {project.update.media.map((media, index) => <div className="project-image-block" key={`update-${index}`}>
+              <MediaContent media={media} />
+            </div>)}
+          </section>}
           <header className={`project-introduction ${project.introduction?.heading ? '' : 'project-introduction-compact'}`}>
             <img src={asset('chicago-stars')} alt="" width="94" height="17" />
             <h1 id="project-title" className="visually-hidden">{project.label}</h1>

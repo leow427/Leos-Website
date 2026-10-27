@@ -438,3 +438,22 @@ model-viewer { --progress-bar-color: var(--route-color); --poster-color: transpa
 @media (max-width: 600px) {
   .week-six .project-collage { grid-template-columns: 1fr; }
 }
+
+/* The latest update follows the project's transit-line color. */
+.project-update {
+  display: flex; flex-direction: column; gap: 20px;
+  padding: clamp(16px, 3cqw, 28px);
+  border: 4px double var(--route-color); border-top-width: 8px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff4e6, #fffdf9 65%);
+  box-shadow: 0 6px 0 #fd821a18;
+}
+.project-update-badge {
+  align-self: flex-start; margin: 0; padding: 8px 14px;
+  border-radius: 999px; background: #8a3c00; color: #fff;
+  font-size: 13px; font-weight: 800; letter-spacing: .12em; line-height: 1.2;
+}
+.week-five .project-update .project-photo { object-fit: contain; }
+@media (max-width: 600px) {
+  .project-update .project-collage { grid-template-columns: 1fr; }
+}

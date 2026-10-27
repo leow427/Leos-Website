@@ -37,6 +37,7 @@ export type Project = {
     paragraphs: string[];
   };
   reflection?: string;
+  update?: { text: string; media: ProjectMedia[] };
   media: ProjectMedia[];
 };
 
@@ -114,6 +115,18 @@ export const projects: Project[] = [
     ] },
   { id: 'week-5', label: 'Week 5', line: 'Orange', x: 935, y: 544,
     labelX: 1036, labelY: 548,
+    update: {
+      text: "i finished the lamp for my stepmom! I have to make some improvements on the design, but once that is done, everything will be posted for you all to make your own!",
+      media: [
+        { kind: 'video', file: 'week-5/finished-lamp.mp4', poster: 'week-5/finished-lamp-poster.jpeg', autoplay: false, alt: 'Finished woven lamp demonstration', width: 720, height: 1280 },
+        { kind: 'collage', images: [
+          { file: 'week-5/lamp-led-test.jpeg', title: 'Lamp LED test', alt: 'Colorful LEDs wrapped around the lamp core on the workbench', width: 1350, height: 1800 },
+          { file: 'week-5/lamp-and-shade.jpeg', title: 'Lamp core and finished shade', alt: 'Illuminated lamp core beside its woven shade and round controller', width: 1350, height: 1800 },
+          { file: 'week-5/lamp-pcb-layout.jpeg', title: 'Final lamp PCB layout', alt: 'Final lamp circuit board layout in the PCB editor', width: 1350, height: 1800 },
+          { file: 'week-5/lamp-electronics.jpeg', title: 'Finished lamp electronics', alt: 'Completed circuit board and USB-C power connection mounted inside the green lamp base', width: 1350, height: 1800 },
+        ] },
+      ],
+    },
     introduction: { paragraphs: ["This week was 3d printing and 3d scanning week. I decided to make my stepmom a 3d printed lamp for her birthday, that is based off an instagram reel that I saw. I was on my explore page and saw this really cool way to hide layer lines in a lamp using a woven texture, and thought it would be a good challenge to try and make it myself. I followed a bunch of youtube tutorials, which sadly took forever. The fabric texture is just a height map that you can place using the texture extrude tool. You just upload a grayscale height map of what you want and extrude accordingly. I wanted the lamp to feel organic so I made it warped, which is made by adding a square sketch and then making a construct sketch plane higher up and making another square, then using the loft feature, which is super useful and one of my favorite features."] },
     media: [
       { kind: 'image-pair', images: [

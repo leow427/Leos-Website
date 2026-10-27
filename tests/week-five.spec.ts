@@ -13,20 +13,22 @@ for (const width of [390, 1440]) {
     await page.screenshot({ path: `.reference/week-5-map-${width}.png`, fullPage: true });
     await stop.click();
     await expect(page).toHaveURL(/#\/projects\/week-5$/);
+    await page.locator('.project-update').screenshot({ path: `.reference/week-5-update-${width}.png` });
     await expect(page.locator('.project-route path')).toHaveCSS('stroke', 'rgb(253, 130, 26)');
-    await expect(page.locator('.project-photo')).toHaveCount(8);
-    await expect(page.locator('.project-collage .project-photo')).toHaveCount(4);
+    await expect(page.locator('.project-photo')).toHaveCount(12);
+    await expect(page.locator('.project-collage .project-photo')).toHaveCount(8);
     for (const photo of await page.locator('.project-collage .project-media').all()) {
       const frame = (await photo.boundingBox())!;
       expect(frame.width / frame.height).toBeCloseTo(3 / 4, 2);
     }
     await expect(page.getByRole('link', { name: 'https://woven-lamp-studio.vercel.app', exact: true })).toHaveAttribute('href', 'https://woven-lamp-studio.vercel.app');
     await expect.poll(() => page.locator('.project-photo').evaluateAll(images => images.every(image => (image as HTMLImageElement).naturalWidth > 0))).toBe(true);
-    const video = page.locator('video');
-    await video.scrollIntoViewIfNeeded();
-    await video.evaluate(async node => { (node as HTMLVideoElement).muted = true; await (node as HTMLVideoElement).play(); });
-    await expect.poll(() => video.evaluate(node => (node as HTMLVideoElement).currentTime)).toBeGreaterThan(0.1);
-    await video.evaluate(node => (node as HTMLVideoElement).pause());
+    for (const video of await page.locator('video').all()) {
+      await video.scrollIntoViewIfNeeded();
+      await video.evaluate(async node => { (node as HTMLVideoElement).muted = true; await (node as HTMLVideoElement).play(); });
+      await expect.poll(() => video.evaluate(node => (node as HTMLVideoElement).currentTime)).toBeGreaterThan(0.1);
+      await video.evaluate(node => (node as HTMLVideoElement).pause());
+    }
     const viewer = page.locator('.model-viewer-shell');
     await viewer.scrollIntoViewIfNeeded();
     await expect(viewer).toHaveAttribute('data-status', 'ready', { timeout: 30000 });
