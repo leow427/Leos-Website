@@ -194,7 +194,8 @@ export const projects: Project[] = [
     ] },
     media: [
       { kind: 'video', file: 'week-8/face-demo-1.mp4', poster: 'week-8/face-demo-1.jpg', autoplay: false, alt: 'Animated LED face demonstration, first video', width: 720, height: 1280 },
-      { kind: 'video', file: 'week-8/face-demo-2.mp4', poster: 'week-8/face-demo-2.jpg', autoplay: false, alt: 'Animated LED face demonstration, second video', width: 720, height: 1280 },
+      { kind: 'video', file: 'week-8/face-demo-3.mp4', poster: 'week-8/face-demo-3.jpg', autoplay: false, alt: 'Animated LED face demonstration, second video', width: 720, height: 1280 },
+      { kind: 'video', file: 'week-8/face-demo-2.mp4', poster: 'week-8/face-demo-2.jpg', autoplay: false, alt: 'Animated LED face demonstration, third video', width: 720, height: 1280 },
       { kind: 'text', text: "When it sees me, he's happy, no matter who else is there. If I leave, he sleeps. And if he see's James... well lets just say he throws a little gesture to show his displeasure." },
       { kind: 'image', image: { file: 'week-8/enclosure.jpg', alt: 'Fusion design of the LED display enclosure, lid, and PCB', width: 1800, height: 1135 }, caption: 'This is a quick little 3d printed enclosure to hold the pcb and make it look cleaner.', captionPosition: 'after' },
     ] },
