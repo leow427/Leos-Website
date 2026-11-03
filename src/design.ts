@@ -185,6 +185,19 @@ export const projects: Project[] = [
       ] },
       { kind: 'image', image: { file: 'week-7/pcb-layout.png', title: 'IR receiver PCB layout', alt: 'IR Receiver v2 PCB layout showing the XIAO ESP32C3, TSOP38438 sensor, and RGB LED connections', width: 1468, height: 946 } },
     ] },
+  { id: 'week-8', label: 'Week 8', line: 'Purple', x: 704, y: 852,
+    labelX: 690, labelY: 920,
+    introduction: { paragraphs: [
+      "This week we were tasked to make something with more advanced C code, while (I think) also reading some sort of input. Last week I already made something complex, but I wanted to try matching that.",
+      "I found a matrix LED display in the box that seemed super cool. I knew almost immediately i wanted to make an animated face, and have been wanting to implement some sort of facial recognition system.",
+      "Here is a video of it working:",
+    ] },
+    media: [
+      { kind: 'video', file: 'week-8/face-demo-1.mp4', poster: 'week-8/face-demo-1.jpg', autoplay: false, alt: 'Animated LED face demonstration, first video', width: 720, height: 1280 },
+      { kind: 'video', file: 'week-8/face-demo-2.mp4', poster: 'week-8/face-demo-2.jpg', autoplay: false, alt: 'Animated LED face demonstration, second video', width: 720, height: 1280 },
+      { kind: 'text', text: "When it sees me, he's happy, no matter who else is there. If I leave, he sleeps. And if he see's James... well lets just say he throws a little gesture to show his displeasure." },
+      { kind: 'image', image: { file: 'week-8/enclosure.jpg', alt: 'Fusion design of the LED display enclosure, lid, and PCB', width: 1800, height: 1135 }, caption: 'This is a quick little 3d printed enclosure to hold the pcb and make it look cleaner.', captionPosition: 'after' },
+    ] },
 ];
 
 export type PageName = 'Projects' | 'Contact';
