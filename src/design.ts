@@ -212,9 +212,16 @@ export const projects: Project[] = [
         { file: 'week-9/tracky-firmware.jpg', alt: 'Trackie displaying train arrivals beside the firmware code', width: 1350, height: 1800 },
         { file: 'week-9/tracky-ui.jpg', alt: 'Trackie showing its pixel-art interface and bus arrival information', width: 1350, height: 1800 },
       ] },
+      { kind: 'video', file: 'week-9/tracky-demo.mp4', alt: 'Trackie interface demonstration (silent)', width: 1080, height: 1920, autoplay: false },
       { kind: 'text', text: 'This is the process log I put together documenting the findings and firmware improvements Claude and I made this week. It follows each round of testing, including the changes that helped and the experiments I decided not to keep. The current draw and battery runtime figures are estimates based on the logged activity.' },
       { kind: 'embed', file: 'week-9/power-analysis.html', title: 'Trackie power analysis and process log' },
-      { kind: 'video', file: 'week-9/tracky-demo.mp4', alt: 'Trackie interface demonstration (silent)', width: 1080, height: 1920, autoplay: false },
+      { kind: 'text', text: 'This is the prototype enclosure I made for Trackie. It holds the wearable and a 2,000 mAh battery, but there are still a few details I want to work out. I’m planning to remake the faceplate, possibly in aluminum, and make the loop a little bigger so it can fit larger clips.' },
+      { kind: 'image', image: { file: 'week-9/trackie-enclosure-design.png', alt: 'Fusion render of the Trackie enclosure with its faceplate and attachment loop', width: 3012, height: 1748 } },
+      { kind: 'video', file: 'week-9/trackie-enclosure.mp4', alt: 'Trackie prototype enclosure demonstration', width: 1080, height: 1920, autoplay: false },
+      { kind: 'text', text: 'I also designed this PCB this week and ordered my first PCB assembly through JLCPCB, which I’m really excited about! This board is for the dock portion of Trackie. The plan is to use LEDs to display three dedicated bus lines, with another LCD screen beside them.' },
+      { kind: 'image', image: { file: 'week-9/dock-pcb-3d.png', alt: '3D view of the Trackie dock PCB with three rows of LEDs', width: 2968, height: 1578 } },
+      { kind: 'image', image: { file: 'week-9/dock-pcb-layout.png', alt: 'Trackie dock PCB layout showing the LED rows and routed connections', width: 2736, height: 1698 } },
+      { kind: 'text', text: 'I’m also working on a few other parts of the project, especially the iPhone companion app for Trackie. More on that soon!' },
     ] },
 
 ];
