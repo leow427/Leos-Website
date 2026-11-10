@@ -16,6 +16,7 @@ export const routeColors = {
 export type ProjectImage = { file: string; alt: string; title?: string; width?: number; height?: number };
 
 export type ProjectMedia =
+  | { kind: 'embed'; file: string; title: string }
   | { kind: 'video'; file: string; alt: string; width: number; height: number; poster?: string; autoplay?: boolean }
   | { kind: 'text'; text: string; link?: { href: string; label: string } }
   | { kind: 'obj-model'; file: string; material: string; alt: string }
@@ -199,6 +200,23 @@ export const projects: Project[] = [
       { kind: 'text', text: "When it sees me, he's happy, no matter who else is there. If I leave, he sleeps. And if he see's James... well lets just say he throws a little gesture to show his displeasure." },
       { kind: 'image', image: { file: 'week-8/enclosure.jpg', alt: 'Fusion design of the LED display enclosure, lid, and PCB', width: 1800, height: 1135 }, caption: 'This is a quick little 3d printed enclosure to hold the pcb and make it look cleaner.', captionPosition: 'after' },
     ] },
+  { id: 'week-9', label: 'Week 9', line: 'Red', x: 828, y: 970,
+    labelX: 876, labelY: 960,
+    introduction: { paragraphs: [
+      'This week was about controlling an output and identifying how much power it uses. I wanted to go deeper so I could estimate battery runtime, see where I could improve it, and find out how long I could make my wearable train tracker last. It also gave me a chance to get ahead on my final project and give it more time to develop. I’ve now named it Trackie!',
+      'I focused on the firmware and the display UI. Once the main interface was working, I built a stress test and worked through three rounds of testing and improvements. Each run logged CPU utilization, RAM usage, screen brightness, and Wi-Fi activity. Together, those logs helped me estimate current draw and compare the effect of each change on battery life.',
+      'The first version worked, but it felt clunky and slow. After each round, I reviewed the logs and made targeted fixes to improve responsiveness and efficiency. I also wanted to get better at coding, so I worked alongside Claude, letting it handle the heavy lifting while I followed the changes and learned from the process.',
+    ] },
+    media: [
+      { kind: 'image-pair', images: [
+        { file: 'week-9/tracky-firmware.jpg', alt: 'Trackie displaying train arrivals beside the firmware code', width: 1350, height: 1800 },
+        { file: 'week-9/tracky-ui.jpg', alt: 'Trackie showing its pixel-art interface and bus arrival information', width: 1350, height: 1800 },
+      ] },
+      { kind: 'text', text: 'This is the process log I put together documenting the findings and firmware improvements Claude and I made this week. It follows each round of testing, including the changes that helped and the experiments I decided not to keep. The current draw and battery runtime figures are estimates based on the logged activity.' },
+      { kind: 'embed', file: 'week-9/power-analysis.html', title: 'Trackie power analysis and process log' },
+      { kind: 'video', file: 'week-9/tracky-demo.mp4', alt: 'Trackie interface demonstration (silent)', width: 1080, height: 1920, autoplay: false },
+    ] },
+
 ];
 
 export type PageName = 'Projects' | 'Contact';

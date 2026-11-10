@@ -240,6 +240,7 @@ function ProjectPhoto({ image, drawing = false }: { image: ProjectImage; drawing
 }
 
 function MediaContent({ media, reflection }: { media: ProjectMedia; reflection?: string }) {
+  if (media.kind === 'embed') return <div><p className="project-reflection"><a href={mediaAsset(media.file)} target="_blank" rel="noreferrer">Open the full process log ↗</a></p><iframe title={media.title} src={mediaAsset(media.file)} style={{ width: '100%', height: '1100px', border: '1px solid #ddd', borderRadius: '12px', background: '#faf9f6' }} /></div>;
   if (media.kind === 'text') return <p className="project-reflection">{media.text}{media.link && <>{' '}<a href={media.link.href} target="_blank" rel="noreferrer">{media.link.label}</a></>}</p>;
   if (media.kind === 'obj-model') return <div className="project-media project-media-model">
     <Suspense fallback={<div className="model-status" role="status">Loading 3D viewer…</div>}>
